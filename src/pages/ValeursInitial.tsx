@@ -11,37 +11,60 @@ import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import InputLabel from '@mui/material/InputLabel';
 import Button from '@mui/material/Button';
+import { SelectChangeEvent } from '@mui/material/Select';
 import Displacement from './Displacement';
+import { parse } from 'path';
 
 interface FormData {
+  trimCorrected: number;
   // Dimensions
-  lbp: string;
-  keelCorrection: string;
+  lbp: number;
+  keelCorrection: number;
 
   // Initial Measurements
-  distanceFore: string;
-  distanceAft: string;
-  distanceMid: string;
+  distanceFore: number;
+  distanceAft: number;
+  distanceMid: number;
   distanceForeType: string;
   distanceAftType: string;
   distanceMidType: string;
   
   // Draft Readings
-  forePort: string;
-  foreStbd: string;
-  aftPort: string;
-  aftStbd: string;
-  midPort: string;
-  midStbd: string;
-  quarterMean: string;
-  trim:string;
-  lbm:string;
+  forePort: number;
+  foreStbd: number;
+  aftPort: number;
+  aftStbd: number;
+  midPort: number;
+  midStbd: number;
+  quarterMean: number;
+  trim:number;
+  lbm:number;
 
   //Displacement values 
-  density: string;
-  draftSup: string;
-  draftInf: string;
+  density: number;
+  draftSup: number;
+  draftInf: number;
+  displacementSup: number;
+  displacement:number;
+  tpcSup: number;
+  lcfSup: number;
+  mtcSup: number;
+  mtcPlus50: number;
+  mtcMinus50: number;
+  tpc: number;
+  lcf: number;
+  displacementInf: number;
+  tpcInf: number;
+  lcfInf: number;
+  deltaMtc: number;
   
+  firstTrimCorrection?: number;
+  secondTrimCorrection?: number;
+  totalTrimCorrection?: number;
+  draftForeCorriged?: number;
+  draftAftCorriged?: number;
+  newDisplacementCorrectedByTrim?: number;
+  newDisplacementCorrectedByDensity?: number;
 }
 
 const StyledPaper = styled(Paper)(({ theme }) => ({
@@ -88,88 +111,157 @@ const StyledSelect = styled(Select)(({ theme }) => ({
 
 const ValeursInitial: React.FC = () => {
   const [formData, setFormData] = useState<FormData>({
-    lbp: '173.000',
-    keelCorrection: '0',
-    distanceFore: '2.14',
-    distanceAft: '8.17',
-    distanceMid: '0.65',
+    lbp: 0,
+    keelCorrection: 0,
+    distanceFore: 0,
+    distanceAft: 0,
+    distanceMid: 0,
     distanceForeType: 'A',
     distanceAftType: 'A',
     distanceMidType: 'A',
-    forePort: '3.76',
-    foreStbd: '3.76',
-    aftPort: '5.87',
-    aftStbd: '5.87',
-    midPort: '4.85',
-    midStbd: '4.88',
-    quarterMean: '4.090',
-    trim:'2.32',
-    lbm:'168.90',
-    density: '1025',
-    draftSup: '3.76',
-    draftInf: '5.87'
+    forePort: 0,
+    foreStbd: 0,
+    aftPort: 0,
+    aftStbd: 0,
+    midPort: 0,
+    midStbd: 0,
+    quarterMean: 0,
+    trim:0,
+    lbm:0,
+    density: 1.025,
+    draftSup: 0,
+    draftInf: 0,
+    displacementSup: 0,
+    displacement:0,
+    tpcSup: 0,
+    lcfSup: 0,
+    mtcSup: 0,
+    mtcPlus50: 0,
+    mtcMinus50: 0,
+    tpc:0,
+    lcf:0,
+    displacementInf: 0,
+    tpcInf: 0,
+    lcfInf: 0,
+    deltaMtc:0,
+    trimCorrected:0,
+    firstTrimCorrection:0,
+    secondTrimCorrection:0,
+    totalTrimCorrection:0,
+    draftForeCorriged:0,
+    draftAftCorriged:0,
+    newDisplacementCorrectedByTrim:0,
+    newDisplacementCorrectedByDensity:0
   });
   /**Assigner un rôle au btnCalc */
   const calculateValues = () => {
     try {
       // Calculate means
-      const moyenneFor = ((parseFloat(formData.forePort) + parseFloat(formData.foreStbd)) / 2).toFixed(3);
-      const moyenneAft = ((parseFloat(formData.aftPort) + parseFloat(formData.aftStbd)) / 2).toFixed(3);
-      const moyenneMid = ((parseFloat(formData.midPort) + parseFloat(formData.midStbd)) / 2).toFixed(3);
+      const moyenneFor = (formData.forePort + formData.foreStbd) / 2;
+      const moyenneAft = (formData.aftPort + formData.aftStbd) / 2;
+      const moyenneMid = (formData.midPort + formData.midStbd) / 2;
+
 
       // Calculate LBM
-      let lbp = parseFloat(formData.lbp);
-      let lbm = 0; 
-      const distanceFore = parseFloat(formData.distanceFore);
-      const distanceAft = parseFloat(formData.distanceAft);
+      let lbp = formData.lbp;
+      // Initialiser lbm avec la valeur de lbp
+      let lbm = lbp;
+      const distanceFore = formData.distanceFore;
+      const distanceAft = formData.distanceAft;
 
+      // Calcul du LBM en fonction des types de distance
       if (formData.distanceForeType === "A" && formData.distanceAftType === "F") {
-        lbm -= distanceFore - distanceAft;
+        // LBM = LBP - Distance Avant - Distance Arrière
+        lbm = lbp - distanceFore - distanceAft;
       } else if (formData.distanceForeType === "F" && formData.distanceAftType === "A") {
-        lbm += distanceFore + distanceAft;
+        // LBM = LBP + Distance Avant + Distance Arrière
+        lbm = lbp + distanceFore + distanceAft;
       } else if (formData.distanceForeType === "A" && formData.distanceAftType === "A") {
-        lbm += distanceFore + distanceAft;
+        // LBM = LBP - Distance Avant - Distance Arrière
+        lbm = lbp - distanceFore - distanceAft;
       } else if (formData.distanceForeType === "F" && formData.distanceAftType === "F") {
-        lbm += distanceFore - distanceAft;
-      } else if (formData.distanceForeType === "N/A" && formData.distanceAftType === "N/A") {
-        lbm = parseFloat(formData.lbp);
+        // LBM = LBP + Distance Avant - Distance Arrière
+        lbm = lbp + distanceFore - distanceAft;
       } else if (formData.distanceForeType === "N/A" && formData.distanceAftType === "A") {
-        lbm = parseFloat(formData.lbp) + distanceAft;
+        // LBM = LBP - Distance Arrière
+        lbm = lbp - distanceAft;
       } else if (formData.distanceForeType === "N/A" && formData.distanceAftType === "F") {
-        lbm = parseFloat(formData.lbp) - distanceAft;
+        // LBM = LBP - Distance Arrière
+        lbm = lbp - distanceAft;
       } else if (formData.distanceForeType === "A" && formData.distanceAftType === "N/A") {
-        lbm = parseFloat(formData.lbp) - distanceFore;
+        // LBM = LBP - Distance Avant
+        lbm = lbp - distanceFore;
       } else if (formData.distanceForeType === "F" && formData.distanceAftType === "N/A") {
-        lbm = parseFloat(formData.lbp) + distanceFore;
+        // LBM = LBP + Distance Avant
+        lbm = lbp + distanceFore;
       }
+      // Si les deux sont N/A, lbm reste égal à lbp (pas besoin de condition)
 
-      // Calculate Trim
-      const trim = (parseFloat(moyenneAft) - parseFloat(moyenneFor)).toFixed(2);
+      // formData.lbm = lbm.toFixed(2);
+      console.log("LBP:", lbp, "DistanceFore:", distanceFore, "DistanceAft:", distanceAft, "LBM:", lbm);
+      document.getElementById('lbm')?.setAttribute('value', lbm.toFixed(2));
       
-       // Calcul des drafts Corrigés:
-       let draftForeCorriged = 0;
-       const distanceForeType = formData.distanceForeType; // Utiliser directement formData
-       const trimValue = parseFloat(trim);
-       let lbmValue = lbm;
-       const distanceForeValue = parseFloat(distanceFore);
-       const moyenneForValue = parseFloat(moyenneFor);
-       
-       if(distanceForeType === "A") {
-         draftForeCorriged = moyenneForValue + (trimValue * distanceForeValue / lbp) * (trimValue > 0 ? -1 : 1);
-       } else if(distanceForeType === "F") {
-         draftForeCorriged = moyenneForValue + (trimValue * distanceForeValue / lbp) * (trimValue > 0 ? 1 : -1);
-       }
-       
+      // Calculate Trim
+         // Calculate Trim
+         const trim = (moyenneAft) -(moyenneFor)
+      
+         // Calcul des drafts Corrigés:
+         let draftForeCorriged = 0;
+         const distanceForeType = formData.distanceForeType;
+         const trimValue = trim;
+         const lbmValue = lbm;
+         const distanceForeValue = formData.distanceFore;
+         const moyenneForValue = moyenneFor;
+          
+         if(distanceForeType === "A") {
+           draftForeCorriged = moyenneForValue + (trimValue * distanceForeValue / lbmValue) * (trimValue > 0 ? -1 : 1);
+         } else if(distanceForeType === "F") {
+           draftForeCorriged = moyenneForValue + (trimValue * distanceForeValue / lbmValue) * (trimValue > 0 ? 1 : -1);
+         } else if(distanceForeType === "N/A") {
+           draftForeCorriged = moyenneForValue;
+         }
+
        let draftAftCorriged = 0;
        const distanceAftType = formData.distanceAftType; // Utiliser directement formData
-       const distanceAftValue = parseFloat(distanceAft);
-        const moyenneAftValue = parseFloat(moyenneAft);
+       const distanceAftValue = formData.distanceAft;
+        const moyenneAftValue = moyenneAft;
+         if (distanceAftType === "A") {
+           draftAftCorriged = moyenneAftValue + (trimValue * distanceAftValue / lbmValue) * (trimValue > 0 ? -1 : 1);
+         } else if (distanceAftType === "F") {
+           draftAftCorriged = moyenneAftValue + (trimValue * distanceAftValue / lbmValue) * (trimValue > 0 ? 1 : -1);
+         } else if (distanceAftType === "N/A") {
+           draftAftCorriged = moyenneAftValue;
+         }
+
+         let draftMidCorriged = 0;
+         const distanceMidType = formData.distanceMidType;
+         const moyenneMidValue = moyenneMid;
+         const distanceMidValue = formData.distanceMid;
+         if (distanceMidType === "A") {
+           draftMidCorriged = moyenneMidValue + (trimValue * distanceMidValue / lbmValue) * (trimValue > 0 ? -1 : 1);
+         } else if (distanceMidType === "F") {
+           draftMidCorriged = moyenneMidValue + (trimValue * distanceMidValue / lbmValue) * (trimValue > 0 ? 1 : -1);
+         } else if (distanceMidType === "N/A") {
+           draftMidCorriged = moyenneMidValue;
+         }
+          // Calculate Quarter Mean
+      console.log("Values for quarterMean calculation:", {
+        draftForeCorriged,
+        draftAftCorriged,
+        draftMidCorriged,
+
+      });
+
+      const kellCorrection = formData.keelCorrection;
+      const quarterMean = (((draftForeCorriged + draftAftCorriged) + (draftMidCorriged*6) ) / 8)-kellCorrection;
+      console.log("Calculated quarterMean:", quarterMean);
+         console.log(formData)
       
-      // Calculate Quarter Mean
-      const quarterMean = (((parseFloat(moyenneFor) + parseFloat(moyenneAft)) + (parseFloat(moyenneMid)*6) ) / 8).toFixed(3);
+      // Calculate draftSup and draftInf based on quarterMean
+      const draftSup = Number(quarterMean) + 1;
+      const draftInf = Number(quarterMean) - 1;
       
-      
-      
+      // Calcul du displacement:
       
       
       
@@ -177,25 +269,70 @@ const ValeursInitial: React.FC = () => {
       // Update form data with calculated values
       setFormData(prev => ({
         ...prev,
-        trim: trim,
-        lbm: lbm.toFixed(2),
-        quarterMean: quarterMean
+        trim,
+        lbm,
+        quarterMean,
+        draftForeCorriged,
+        draftAftCorriged,
+        distanceForeType,
+        distanceAftType,
+        distanceFore,
+        distanceAft,
+        moyenneFor,
+        moyenneAft,
+        moyenneMid,
+        density: formData.density,
+        draftSup,
+        draftInf,
+        displacementSup: formData.displacementSup,
+        displacement: formData.displacement,
+        tpcSup: formData.tpcSup,
+        lcfSup: formData.lcfSup,
+        mtcSup: formData.mtcSup,
+        mtcPlus50: formData.mtcPlus50,
+        mtcMinus50:  formData.mtcMinus50,
+        tpc: formData.tpc,
+        lcf: formData.lcf,
+        displacementInf: formData.displacementInf,
+        tpcInf: formData.tpcInf,
+        lcfInf: formData.lcfInf,
+        deltaMtc: formData.deltaMtc,
+        trimCorrected: formData.trimCorrected,
+        firstTrimCorrection: formData.firstTrimCorrection,
+        secondTrimCorrection: formData.secondTrimCorrection,
+        totalTrimCorrection: formData.totalTrimCorrection,
+        newDisplacementCorrectedByTrim: formData.newDisplacementCorrectedByTrim,
+        newDisplacementCorrectedByDensity: formData.newDisplacementCorrectedByDensity,
       }));
-
     } catch (error) {
       console.error(error);
       alert("Error in calculations. Please check your input values.");
     }
   };
   /**HandleChanges */
-  const handleChange = (field: keyof FormData) => (
-    event: React.ChangeEvent<HTMLInputElement> | React.ChangeEvent<{ value: unknown }> | any
+  const handleChange = (prop: keyof FormData) => (
+    event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement> | SelectChangeEvent<unknown>
   ) => {
-    setFormData(prev => ({
-      ...prev,
-      [field]: event.target.value
-    }));
-    console.log(formData);
+    const value = event.target.value;
+    
+    // Liste des champs qui doivent rester des chaînes
+    const stringFields = ['distanceForeType', 'distanceAftType', 'distanceMidType'];
+    
+    if (stringFields.includes(prop)) {
+      setFormData(prevFormData => ({
+        ...prevFormData,
+        [prop]: value
+      }));
+    } else {
+      // Pour les champs numériques
+      const normalizedValue = String(value).replace(',', '.');
+      const numericValue = normalizedValue === '' ? 0 : parseFloat(normalizedValue);
+      
+      setFormData(prevFormData => ({
+        ...prevFormData,
+        [prop]: isNaN(numericValue) ? 0 : numericValue
+      }));
+    }
   };
 
   return (
@@ -375,31 +512,37 @@ const ValeursInitial: React.FC = () => {
                   />
                 </Grid>
                 <Grid item xs={12}>
-                  <StyledTextField
+                <StyledTextField
                     fullWidth
                     label="Quarter Mean"
-                    value={formData.quarterMean}
-                    onChange={handleChange('quarterMean')}
-                    id='quarterMean'
+                    value={(formData.quarterMean).toFixed(3)}
+                    InputProps={{
+                      readOnly: true,
+                    }}
+                    sx={{ backgroundColor: 'rgba(0, 0, 0, 0.1)' }}
                   />
                 </Grid>
               </Grid>
               <Grid item xs={12} mt={4}>
-                  <StyledTextField
+              <StyledTextField
                     fullWidth
                     label="Trim"
-                    value={formData.trim}
-                    onChange={handleChange('trim')}
-                    id='trim'
+                    value={parseFloat(formData.trim.toFixed(2))}
+                    InputProps={{
+                      readOnly: true,
+                    }}
+                    sx={{ backgroundColor: 'rgba(0, 0, 0, 0.1)' }}
                   />
                 </Grid>
                 <Grid item xs={12} mt={4}>
-                  <StyledTextField
+                <StyledTextField
                     fullWidth
                     label="LBM"
                     value={formData.lbm}
-                    onChange={handleChange('lbm')}
-                    id='lbm'
+                    InputProps={{
+                      readOnly: true,
+                    }}
+                    sx={{ backgroundColor: 'rgba(0, 0, 0, 0.1)' }}
                   />
                 </Grid>
                 <Grid container justifyContent="center" mt={4}>
@@ -416,10 +559,44 @@ const ValeursInitial: React.FC = () => {
                 </Grid>
             </StyledPaper>
             <Displacement
-              density={Number(formData.density)}
-              draftSup={Number(formData.draftSup)}
-              quarterMean={Number(formData.quarterMean)}
-              draftInf={Number(formData.draftInf)}
+            density={formData.density}
+            draftSup={formData.draftSup}
+            quarterMean={formData.quarterMean}
+            draftInf={formData.draftInf}
+            displacementSup={formData.displacementSup}
+            displacement={formData.displacement}
+            tpcSup={formData.tpcSup}
+            lcfSup={formData.lcfSup}
+            mtcPlus50={formData.mtcPlus50}
+            mtcMinus50={formData.mtcMinus50}
+            tpc={formData.tpc}
+            lcf={formData.lcf}
+            displacementInf={formData.displacementInf}
+            tpcInf={formData.tpcInf}
+            lcfInf={formData.lcfInf}
+            deltaMtc={formData.deltaMtc}
+            trimCorrected={formData.trimCorrected}
+            firstTrimCorrection={formData.firstTrimCorrection ?? 0 }
+            secondTrimCorrection={formData.secondTrimCorrection ?? 0 }
+            totalTrimCorrection={formData.totalTrimCorrection ?? 0 }
+            draftForeCorriged={formData.draftForeCorriged ?? 0}
+            draftAftCorriged={formData.draftAftCorriged ?? 0}
+            lbp={formData.lbp ?? 0}
+            newDisplacementCorrectedByTrim={formData.newDisplacementCorrectedByTrim ?? 0}
+            newDisplacementCorrectedByDensity={formData.newDisplacementCorrectedByDensity ?? 0}
+              onValueChange={(field, value) => {
+                setFormData(prev => ({
+                  ...prev,
+                  [field]: value,
+                  // Calculer les moyennes lorsque les valeurs changent
+                  ...(field.includes('Sup') || field.includes('Inf') ? {
+                    displacement: Number(formData.displacementInf) + ((Number(formData.displacementSup) - Number(formData.displacementInf)) / (Number(formData.draftSup) - Number(formData.draftInf))) * (Number(formData.draftSup) - Number(formData.quarterMean)),
+                    tpc: Number(formData.tpcInf) + ((Number(formData.tpcSup) - Number(formData.tpcInf)) / (Number(formData.draftSup) - Number(formData.draftInf))) * (Number(formData.draftSup) - Number(formData.quarterMean)),
+                    lcf: Number(formData.lcfInf) + ((Number(formData.lcfSup) - Number(formData.lcfInf)) / (Number(formData.draftSup) - Number(formData.draftInf))) * (Number(formData.draftSup) - Number(formData.quarterMean)),
+                    deltaMtc: Number(formData.mtcPlus50) - Number(formData.mtcMinus50) 
+                  } : {})
+                }));
+              }}
             />
             </Grid>
         </Grid>

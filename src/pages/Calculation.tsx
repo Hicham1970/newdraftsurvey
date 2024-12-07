@@ -1,6 +1,7 @@
 import React from 'react';
-import { Container, Paper, Typography, Grid } from '@mui/material';
+import { Container, Paper, Typography, Grid, Button } from '@mui/material';
 import { styled } from '@mui/material/styles';
+import DraftSurveyReport from './DraftSurveyReport';
 
 const StyledPaper = styled(Paper)(({ theme }) => ({
   padding: theme.spacing(3),
@@ -11,15 +12,32 @@ const StyledPaper = styled(Paper)(({ theme }) => ({
 }));
 
 const Calculation: React.FC = () => {
+  // Function to handle report generation
+  const handleGenerateReport = () => {
+    // Add logic for report generation if needed
+  };
+
   return (
     <Container maxWidth="xl">
       <Grid container spacing={3}>
         <Grid item xs={12}>
           <StyledPaper>
-            <Typography variant="h5" gutterBottom color="primary">
+            <Typography variant="h5" gutterBottom sx={{ color: '#ff0000' }}>
               Draft Survey Calculation
             </Typography>
-            {/* Add your calculation form components here */}
+            <Grid container spacing={2} justifyContent="flex-end">
+              <Grid item>
+                <Button 
+                  variant="contained" 
+                  color="warning"
+                  onClick={handleGenerateReport}
+                  sx={{ mb: 2 }}
+                >
+                  Generate Report
+                </Button>
+              </Grid>
+            </Grid>
+            <DraftSurveyReport />
           </StyledPaper>
         </Grid>
       </Grid>

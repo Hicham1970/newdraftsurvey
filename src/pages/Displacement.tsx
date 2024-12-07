@@ -141,6 +141,7 @@ const TrimCorrectionValue = styled(Typography)({
 });
 
 interface DisplacementProps {
+  type?: 'initial' | 'final';
   density: number;
   draftSup: number;
   quarterMean: number;
@@ -166,10 +167,17 @@ interface DisplacementProps {
   lbp: number;
   newDisplacementCorrectedByTrim: number;
   newDisplacementCorrectedByDensity:number;
+  totalBallast: number;
+  freeshWater: number;
+  totalBunker: number;
+  lightShip: number;
+  others: number;
+  totalDeductibles: number;
   onValueChange?: (field: string, value: number) => void;
 }
 
 const Displacement: React.FC<DisplacementProps> = ({
+  type,
   density,
   draftSup,
   quarterMean,
@@ -195,6 +203,12 @@ const Displacement: React.FC<DisplacementProps> = ({
   lbp,
   newDisplacementCorrectedByTrim,
   newDisplacementCorrectedByDensity,
+  totalBallast,
+  freeshWater,
+  totalBunker,
+  lightShip,
+  others,
+  totalDeductibles,
   onValueChange
 }) => {
   const handleValueChange = (field: string, value: number) => {
@@ -218,7 +232,13 @@ const Displacement: React.FC<DisplacementProps> = ({
   const [trimCorrectedValue, setTrimCorrectedValue] = React.useState(trimCorrected);
   const [newDisplacementCorrectedByTrimValue, setNewDisplacementCorrectedByTrimValue] = React.useState(newDisplacementCorrectedByTrim);
   const [newDisplacementCorrectedByDensityValue, setNewDisplacementCorrectedByDensityValue] = React.useState(newDisplacementCorrectedByDensity);
-  
+  const [totalBallastValue, setTotalBallastValue] = React.useState(totalBallast);
+  const [freeshWaterValue, setFreeshWaterValue] = React.useState(freeshWater);
+  const [totalBunkerValue, setTotalBunkerValue] = React.useState(totalBunker);
+  const [lightShipValue, setLightShipValue] = React.useState(lightShip);
+  const [othersValue, setOthersValue] = React.useState(others);
+  const [totalDeductiblesValue, setTotalDeductiblesValue] = React.useState(totalDeductibles);
+
   // Fonction pour gérer les changements dans les champs
   const handleChange = (field: keyof DisplacementProps) => (event: React.ChangeEvent<HTMLInputElement>) => {
     const value = parseFloat(event.target.value);
@@ -252,6 +272,23 @@ const Displacement: React.FC<DisplacementProps> = ({
       if (onValueChange) {
         onValueChange(field, value);
       }
+    }
+  };
+
+  // Deductibles Section
+  const handleDeductibleChange = (field: string, value: number) => {
+    if (onValueChange) {
+      onValueChange(field, value);
+      
+      // Calculate total deductibles
+      const newTotalDeductibles = 
+        (field === 'totalBallast' ? value : totalBallast || 0) +
+        (field === 'freeshWater' ? value : freeshWater || 0) +
+        (field === 'totalBunker' ? value : totalBunker || 0) +
+        (field === 'lightShip' ? value : lightShip || 0) +
+        (field === 'others' ? value : others || 0);
+      
+      onValueChange('totalDeductibles', newTotalDeductibles);
     }
   };
 
@@ -532,7 +569,7 @@ const Displacement: React.FC<DisplacementProps> = ({
               </MTCRow>
             </MTCTable>
           </Grid>
-          {/* Correction Du displacement par le trim */}
+          {/* Correction Du displacement par le trim & density*/}
           <Grid item xs={12} sx={{ margin: '20px' }}>
             <TrimCorrectionTable>
               <TrimCorrectionHeader>DISPLACEMENT CORRECTION</TrimCorrectionHeader>
@@ -558,6 +595,70 @@ const Displacement: React.FC<DisplacementProps> = ({
               </TrimCorrectionRow>
             </TrimCorrectionTable>
           </Grid>
+          {/* Deductibles */}
+          <Grid container spacing={2} sx={{ mt: 3 }}>
+            <Grid item xs={12}>
+              <Typography variant="h6" sx={{ color: '#00ff00', mb: 2 }}>
+                Deductibles
+              </Typography>
+            </Grid>
+            <Grid item xs={12} sm={4}>
+              <StyledTextField
+                label="Total Ballast"
+                type="number"
+                value={totalBallast || ''}
+                onChange={(e) => handleDeductibleChange('totalBallast', Number(e.target.value))}
+                fullWidth
+              />
+            </Grid>
+            <Grid item xs={12} sm={4}>
+              <StyledTextField
+                label="Fresh Water"
+                type="number"
+                value={freeshWater || ''}
+                onChange={(e) => handleDeductibleChange('freeshWater', Number(e.target.value))}
+                fullWidth
+              />
+            </Grid>
+            <Grid item xs={12} sm={4}>
+              <StyledTextField
+                label="Total Bunker"
+                type="number"
+                value={totalBunker || ''}
+                onChange={(e) => handleDeductibleChange('totalBunker', Number(e.target.value))}
+                fullWidth
+              />
+            </Grid>
+            <Grid item xs={12} sm={4}>
+              <StyledTextField
+                label="Light Ship"
+                type="number"
+                value={lightShip || ''}
+                onChange={(e) => handleDeductibleChange('lightShip', Number(e.target.value))}
+                fullWidth
+              />
+            </Grid>
+            <Grid item xs={12} sm={4}>
+              <StyledTextField
+                label="Others"
+                type="number"
+                value={others || ''}
+                onChange={(e) => handleDeductibleChange('others', Number(e.target.value))}
+                fullWidth
+              />
+            </Grid>
+            <Grid item xs={12} sm={4}>
+              <HighlightedValueCell>
+                Total Deductibles: {totalDeductibles?.toFixed(3) || '0.000'}
+              </HighlightedValueCell>
+            </Grid>
+            <Grid item xs={12} sm={12}>
+              <HighlightedValueCell>
+                {type === 'final' ? 'Final' : 'Initial'} Displacement: {(newDisplacementCorrectedByDensity - totalDeductibles)?.toFixed(3) || '0.000'}
+              </HighlightedValueCell>
+            </Grid>
+          </Grid>
+
         </Grid>
       </Grid>
     </StyledPaper>

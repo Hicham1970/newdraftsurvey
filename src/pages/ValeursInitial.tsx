@@ -65,6 +65,12 @@ interface FormData {
   draftAftCorriged?: number;
   newDisplacementCorrectedByTrim?: number;
   newDisplacementCorrectedByDensity?: number;
+  totalBallast?: number;
+  freeshWater?: number;
+  totalBunker?: number;
+  lightShip?: number;
+  others?: number;
+  totalDeductibles?: number;
 }
 
 const StyledPaper = styled(Paper)(({ theme }) => ({
@@ -151,7 +157,14 @@ const ValeursInitial: React.FC = () => {
     draftForeCorriged:0,
     draftAftCorriged:0,
     newDisplacementCorrectedByTrim:0,
-    newDisplacementCorrectedByDensity:0
+    newDisplacementCorrectedByDensity:0,
+    totalBallast:0,
+    freeshWater:0,
+    totalBunker:0,
+    lightShip:0,
+    others:0,
+    totalDeductibles:0,
+  
   });
   /**Assigner un rôle au btnCalc */
   const calculateValues = () => {
@@ -258,8 +271,8 @@ const ValeursInitial: React.FC = () => {
          console.log(formData)
       
       // Calculate draftSup and draftInf based on quarterMean
-      const draftSup = Number(quarterMean) + 1;
-      const draftInf = Number(quarterMean) - 1;
+      const draftSup = Number(quarterMean) + 0.5;
+      const draftInf = Number(quarterMean) - 0.5;
       
       // Calcul du displacement:
       
@@ -303,6 +316,12 @@ const ValeursInitial: React.FC = () => {
         totalTrimCorrection: formData.totalTrimCorrection,
         newDisplacementCorrectedByTrim: formData.newDisplacementCorrectedByTrim,
         newDisplacementCorrectedByDensity: formData.newDisplacementCorrectedByDensity,
+        totalBallast: formData.totalBallast,
+        freeshWater: formData.freeshWater,
+        totalBunker: formData.totalBunker,
+        lightShip: formData.lightShip,
+        others: formData.others,
+        totalDeductibles: formData.totalDeductibles
       }));
     } catch (error) {
       console.error(error);
@@ -559,6 +578,7 @@ const ValeursInitial: React.FC = () => {
                 </Grid>
             </StyledPaper>
             <Displacement
+            type="initial"
             density={formData.density}
             draftSup={formData.draftSup}
             quarterMean={formData.quarterMean}
@@ -584,6 +604,12 @@ const ValeursInitial: React.FC = () => {
             lbp={formData.lbp ?? 0}
             newDisplacementCorrectedByTrim={formData.newDisplacementCorrectedByTrim ?? 0}
             newDisplacementCorrectedByDensity={formData.newDisplacementCorrectedByDensity ?? 0}
+            totalBallast={formData.totalBallast ?? 0}
+            freeshWater={formData.freeshWater ?? 0}
+            totalBunker={formData.totalBunker ?? 0}
+            lightShip={formData.lightShip ?? 0}
+            others={formData.others ?? 0}
+            totalDeductibles={formData.totalDeductibles ?? 0}
               onValueChange={(field, value) => {
                 setFormData(prev => ({
                   ...prev,

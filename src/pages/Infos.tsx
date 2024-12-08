@@ -11,7 +11,11 @@ import Paper from '@mui/material/Paper';
 import Typography from '@mui/material/Typography';
 import RocketLaunchIcon from '@mui/icons-material/RocketLaunch';
 import AccessAlarmIcon from '@mui/icons-material/AccessAlarm';
-
+import Button from '@mui/material/Button';
+import SendIcon from '@mui/icons-material/Send';
+import Snackbar from '@mui/material/Snackbar';
+import Alert from '@mui/material/Alert';
+import { vesselService } from '../services/vesselService';
 
 interface FormData {
   nationality: string;
@@ -22,15 +26,15 @@ interface FormData {
   portOfLoading: string;
   portOfDischarge: string;
   blWeight: string;
-  blDate: Date | null;
-  vesselArrived: Date | null;
-  vesselBerthed: Date | null;
-  initialSurveyCommenced: Date | null;
-  initialSurveyCompleted: Date | null;
-  operationCommenced: Date | null;
-  operationCompleted: Date | null;
-  finalSurveyCommenced: Date | null;
-  finalSurveyCompleted: Date | null;
+  blDate: Date ;
+  vesselArrived: Date ;
+  vesselBerthed: Date ;
+  initialSurveyCommenced: Date ;
+  initialSurveyCompleted: Date ;
+  operationCommenced: Date ;
+  operationCompleted: Date ;
+  finalSurveyCommenced: Date ;
+  finalSurveyCompleted: Date ;
 }
 
 interface FormErrors {
@@ -62,18 +66,28 @@ const Infos: React.FC = () => {
     portOfLoading: '',
     portOfDischarge: '',
     blWeight: '',
-    blDate: null,
-    vesselArrived: null,
-    vesselBerthed: null,
-    initialSurveyCommenced: null,
-    initialSurveyCompleted: null,
-    operationCommenced: null,
-    operationCompleted: null,
-    finalSurveyCommenced: null,
-    finalSurveyCompleted: null,
+    blDate: new Date(),
+    vesselArrived: new Date(),
+    vesselBerthed: new Date(),
+    initialSurveyCommenced: new Date(),
+    initialSurveyCompleted: new Date(),
+    operationCommenced: new Date(),
+    operationCompleted: new Date(),
+    finalSurveyCommenced: new Date(),
+    finalSurveyCompleted: new Date(),
   });
 
   const [errors, setErrors] = useState<FormErrors>({});
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [snackbar, setSnackbar] = useState<{
+    open: boolean;
+    message: string;
+    severity: 'success' | 'error';
+  }>({
+    open: false,
+    message: '',
+    severity: 'success'
+  });
 
   const handleChange = (field: keyof FormData) => (value: any) => {
     setFormData(prev => ({
@@ -88,10 +102,16 @@ const Infos: React.FC = () => {
 
     switch (field) {
       case 'blWeight':
-        if (!/^\d{1,3}(,\d{3})*(\.\d+)?$/.test(value.toString().replace(/\s/g, ''))) {
-          newErrors[field] = 'Invalid weight format';
+        if (!value.trim()) {
+          newErrors[field] = 'BL Weight is required';
         } else {
-          delete newErrors[field];
+          // Validation du format du BL Weight
+          const normalizedValue = value.replace(/\s/g, '').replace(',', '.');
+          if (!/^\d+(\.\d{1,3})?$/.test(normalizedValue)) {
+            newErrors[field] = 'BL Weight must be a valid number with up to 3 decimal places. Spaces are allowed as thousand separators.';
+          } else {
+            delete newErrors[field];
+          }
         }
         break;
       case 'vessel':
@@ -114,6 +134,95 @@ const Infos: React.FC = () => {
     }
 
     setErrors(newErrors);
+  };
+
+  const validateForm = (): boolean => {
+    const newErrors: FormErrors = {};
+    
+    // Validation des champs requis
+    if (!formData.nationality.trim()) newErrors.nationality = 'Nationality is required';
+    if (!formData.portOfRegistry.trim()) newErrors.portOfRegistry = 'Port of Registry is required';
+    if (!formData.vessel.trim()) newErrors.vessel = 'Vessel name is required';
+    if (!formData.cargo.trim()) newErrors.cargo = 'Cargo is required';
+    if (!formData.port.trim()) newErrors.port = 'Port is required';
+    if (!formData.portOfLoading.trim()) newErrors.portOfLoading = 'Port of Loading is required';
+    if (!formData.portOfDischarge.trim()) newErrors.portOfDischarge = 'Port of Discharge is required';
+    if (!formData.blWeight.trim()) {
+      newErrors.blWeight = 'BL Weight is required';
+    } else {
+      // Validation du format du BL Weight
+      const normalizedValue = formData.blWeight.replace(/\s/g, '').replace(',', '.');
+      if (!/^\d+(\.\d{1,3})?$/.test(normalizedValue)) {
+        newErrors.blWeight = 'BL Weight must be a valid number with up to 3 decimal places. Spaces are allowed as thousand separators.';
+      }
+    }
+    
+    // Validation des dates
+    if (!formData.blDate) newErrors.blDate = 'BL Date is required';
+    if (!formData.vesselArrived) newErrors.vesselArrived = 'Vessel Arrived date is required';
+    if (!formData.vesselBerthed) newErrors.vesselBerthed = 'Vessel Berthed date is required';
+    if (!formData.initialSurveyCommenced) newErrors.initialSurveyCommenced = 'Initial Survey Commenced date is required';
+    if (!formData.initialSurveyCompleted) newErrors.initialSurveyCompleted = 'Initial Survey Completed date is required';
+    if (!formData.operationCommenced) newErrors.operationCommenced = 'Operation Commenced date is required';
+    if (!formData.operationCompleted) newErrors.operationCompleted = 'Operation Completed date is required';
+    if (!formData.finalSurveyCommenced) newErrors.finalSurveyCommenced = 'Final Survey Commenced date is required';
+    if (!formData.finalSurveyCompleted) newErrors.finalSurveyCompleted = 'Final Survey Completed date is required';
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
+  const handleSubmit = async () => {
+    if (!validateForm()) {
+      setSnackbar({
+        open: true,
+        message: 'Please fill in all required fields correctly',
+        severity: 'error'
+      });
+      return;
+    }
+
+    setIsSubmitting(true);
+    try {
+      await vesselService.createVessel(formData);
+      setSnackbar({
+        open: true,
+        message: 'Vessel information saved successfully!',
+        severity: 'success'
+      });
+      // Optionnel : réinitialiser le formulaire après succès
+      setFormData({
+        nationality: '',
+        portOfRegistry: '',
+        vessel: '',
+        cargo: '',
+        port: '',
+        portOfLoading: '',
+        portOfDischarge: '',
+        blWeight: '',
+        blDate: new Date(),
+        vesselArrived: new Date(),
+        vesselBerthed: new Date(),
+        initialSurveyCommenced: new Date(),
+        initialSurveyCompleted: new Date(),
+        operationCommenced: new Date(),
+        operationCompleted: new Date(),
+        finalSurveyCommenced: new Date(),
+        finalSurveyCompleted: new Date(),
+      });
+    } catch (error) {
+      setSnackbar({
+        open: true,
+        message: error instanceof Error ? error.message : 'An error occurred while saving the data',
+        severity: 'error'
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  const handleCloseSnackbar = () => {
+    setSnackbar(prev => ({ ...prev, open: false }));
   };
 
   return (
@@ -363,8 +472,50 @@ const Infos: React.FC = () => {
                 </Grid>
               </StyledPaper>
             </Grid>
+
+            {/* Submit Button */}
+            <Grid item xs={12}>
+              <Box sx={{ display: 'flex', justifyContent: 'center', mt: 4 }}>
+                <Button
+                  variant="contained"
+                  color="primary"
+                  size="large"
+                  onClick={handleSubmit}
+                  disabled={isSubmitting}
+                  startIcon={<SendIcon />}
+                  sx={{
+                    minWidth: 200,
+                    height: 48,
+                    borderRadius: 2,
+                    background: 'linear-gradient(45deg, #FF0000 30%, #FF4081 90%)',
+                    '&:hover': {
+                      background: 'linear-gradient(45deg, #FF4081 30%, #FF0000 90%)',
+                    }
+                  }}
+                >
+                  {isSubmitting ? 'Saving...' : 'Save Vessel Info'}
+                </Button>
+              </Box>
+            </Grid>
           </Grid>
         </Box>
+
+        {/* Snackbar pour les notifications */}
+        <Snackbar
+          open={snackbar.open}
+          autoHideDuration={6000}
+          onClose={handleCloseSnackbar}
+          anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+        >
+          <Alert
+            onClose={handleCloseSnackbar}
+            severity={snackbar.severity}
+            variant="filled"
+            sx={{ width: '100%' }}
+          >
+            {snackbar.message}
+          </Alert>
+        </Snackbar>
       </Container>
     </LocalizationProvider>
   );

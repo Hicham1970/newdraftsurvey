@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API_URL = 'http://localhost:3001/api/vessels';
+const API_URL = 'http://localhost:3000/api/vesselInfos';
 
 export interface IVesselData {
   nationality: string;

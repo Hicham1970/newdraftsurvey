@@ -14,6 +14,7 @@ import Button from '@mui/material/Button';
 import { SelectChangeEvent } from '@mui/material/Select';
 import Displacement from './Displacement';
 import { parse } from 'path';
+import DialpadIcon from '@mui/icons-material/Dialpad';
 
 interface FormData {
   trimCorrected: number;
@@ -361,9 +362,12 @@ const ValeursFinal: React.FC = () => {
           {/* Dimensions */}
           <Grid item xs={12}>
             <StyledPaper>
-              <Typography variant="h6" gutterBottom sx={{ color: '#ff0000' }}>
-                Dimensions
-              </Typography>
+              <Box sx={{ display: 'flex', alignItems: 'center', mb: 3 }}>
+                <DialpadIcon sx={{ fontSize: 40, color: '#ff0000', mr: 2 }} />
+                <Typography variant="h6" gutterBottom sx={{ color: '#ff0000' }}>
+                  Dimensions
+                </Typography>
+              </Box>
               <Grid container spacing={2}>
                 <Grid item xs={12} md={6}>
                   <StyledTextField
@@ -392,9 +396,12 @@ const ValeursFinal: React.FC = () => {
           {/* Initial Measurements */}
           <Grid item xs={12}>
             <StyledPaper>
-              <Typography variant="h6" gutterBottom sx={{ color: '#ff0000' }}>
-                Final Measurements
-              </Typography>
+              <Box sx={{ display: 'flex', alignItems: 'center', mb: 3 }}>
+                <DialpadIcon sx={{ fontSize: 40, color: '#ff0000', mr: 2 }} />
+                <Typography variant="h6" gutterBottom sx={{ color: '#ff0000' }}>
+                  Final Measurements
+                </Typography>
+              </Box>
               <Grid container spacing={2}>
                 <Grid item xs={12} md={4} sx={{ display: 'flex', gap: 1 }}>
                   <StyledTextField
@@ -472,9 +479,12 @@ const ValeursFinal: React.FC = () => {
           {/* Initial Draft Readings */}
           <Grid item xs={12}>
             <StyledPaper>
-              <Typography variant="h6" gutterBottom sx={{ color: '#ff0000' }}>
-                Final Draft Readings
-              </Typography>
+              <Box sx={{ display: 'flex', alignItems: 'center', mb: 3 }}>
+                <DialpadIcon sx={{ fontSize: 40, color: '#ff0000', mr: 2 }} />
+                <Typography variant="h6" gutterBottom sx={{ color: '#ff0000' }}>
+                  Final Draft Readings
+                </Typography>
+              </Box>
               <Grid container spacing={2}>
                 <Grid item xs={12} md={4}>
                   <StyledTextField

@@ -6,6 +6,8 @@ import Grid from '@mui/material/Grid';
 import TextField from '@mui/material/TextField';
 import Paper from '@mui/material/Paper';
 import Typography from '@mui/material/Typography';
+import AddchartIcon from '@mui/icons-material/Addchart';
+import StraightenIcon from '@mui/icons-material/Straighten';
 
 interface FormData {
   // Vessel Characteristics
@@ -76,14 +78,17 @@ const Caracteristiques: React.FC = () => {
 
   return (
     <Container maxWidth="xl">
-      <Box sx={{ flexGrow: 1, mt: 4, mb: 4 }}>
-        <Grid container spacing={4}>
+      <Box sx={{ flexGrow: 1, mt: 4 }}>
+        <Grid container spacing={3}>
           {/* Left Column */}
           <Grid item xs={12} md={6}>
             <StyledPaper>
-              <Typography variant="h6" gutterBottom sx={{ color: '#fff' }}>
-                Vessel Characteristics
-              </Typography>
+              <Box sx={{ display: 'flex', alignItems: 'center', mb: 3 }}>
+                <AddchartIcon sx={{ fontSize: 40, color: '#ff0000', mr: 2 }} />
+                <Typography variant="h5" gutterBottom>
+                  Vessel Characteristics
+                </Typography>
+              </Box>
               <Grid container spacing={2}>
                 <Grid item xs={12}>
                   <StyledTextField
@@ -148,9 +153,12 @@ const Caracteristiques: React.FC = () => {
           {/* Right Column */}
           <Grid item xs={12} md={6}>
             <StyledPaper>
-              <Typography variant="h6" gutterBottom sx={{ color: '#fff' }}>
-                Dimensions
-              </Typography>
+              <Box sx={{ display: 'flex', alignItems: 'center', mb: 3 }}>
+                <StraightenIcon sx={{ fontSize: 40, color: '#ff0000', mr: 2 }} />
+                <Typography variant="h5" gutterBottom>
+                  Dimensions
+                </Typography>
+              </Box>
               <Grid container spacing={2}>
                 <Grid item xs={12}>
                   <StyledTextField

@@ -9,6 +9,9 @@ import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
 import Paper from '@mui/material/Paper';
 import Typography from '@mui/material/Typography';
+import RocketLaunchIcon from '@mui/icons-material/RocketLaunch';
+import AccessAlarmIcon from '@mui/icons-material/AccessAlarm';
+
 
 interface FormData {
   nationality: string;
@@ -51,23 +54,23 @@ const StyledTextField = styled(TextField)(({ theme }) => ({
 
 const Infos: React.FC = () => {
   const [formData, setFormData] = useState<FormData>({
-    nationality: 'PANAMA',
-    portOfRegistry: 'PANAMA',
-    vessel: 'DRINA S',
-    cargo: 'PHOSPHATE IN BULK',
-    port: 'CASABLANCA',
-    portOfLoading: 'CASABLANCA',
-    portOfDischarge: 'ANTWERP',
-    blWeight: '33 000,000',
-    blDate: new Date('2024-08-10'),
-    vesselArrived: new Date('2024-08-08T20:30'),
-    vesselBerthed: new Date('2024-08-09T09:25'),
-    initialSurveyCommenced: new Date('2024-08-09T09:45'),
-    initialSurveyCompleted: new Date('2024-08-09T11:00'),
-    operationCommenced: new Date('2024-08-09T12:15'),
-    operationCompleted: new Date('2024-08-10T12:40'),
-    finalSurveyCommenced: new Date('2024-08-10T12:40'),
-    finalSurveyCompleted: new Date('2024-08-10T13:45'),
+    nationality: '',
+    portOfRegistry: '',
+    vessel: '',
+    cargo: '',
+    port: '',
+    portOfLoading: '',
+    portOfDischarge: '',
+    blWeight: '',
+    blDate: null,
+    vesselArrived: null,
+    vesselBerthed: null,
+    initialSurveyCommenced: null,
+    initialSurveyCompleted: null,
+    operationCommenced: null,
+    operationCompleted: null,
+    finalSurveyCommenced: null,
+    finalSurveyCompleted: null,
   });
 
   const [errors, setErrors] = useState<FormErrors>({});
@@ -121,9 +124,12 @@ const Infos: React.FC = () => {
             {/* Left Column - Vessel Information */}
             <Grid item xs={12} md={6}>
               <StyledPaper elevation={3}>
-                <Typography variant="h5" gutterBottom>
-                  Vessel Information
-                </Typography>
+                <Box sx={{ display: 'flex', alignItems: 'center', mb: 3 }}>
+                  <RocketLaunchIcon sx={{ fontSize: 40, color: '#ff0000', mr: 2 }} />
+                  <Typography variant="h5" gutterBottom>
+                    Vessel Information
+                  </Typography>
+                </Box>
                 <Grid container spacing={3}>
                   <Grid item xs={12}>
                     <StyledTextField
@@ -227,9 +233,12 @@ const Infos: React.FC = () => {
             {/* Right Column - Operation Timing */}
             <Grid item xs={12} md={6}>
               <StyledPaper elevation={3}>
-                <Typography variant="h5" gutterBottom>
-                  Operation Timing
-                </Typography>
+                <Box sx={{ display: 'flex', alignItems: 'center', mb: 3 }}>
+                  <AccessAlarmIcon sx={{ fontSize: 40, color: '#ff0000', mr: 2 }} />
+                  <Typography variant="h5" gutterBottom>
+                    Operation Timing
+                  </Typography>
+                </Box>
                 <Grid container spacing={3}>
                   <Grid item xs={12}>
                     <DateTimePicker

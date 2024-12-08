@@ -2,6 +2,7 @@ import React from 'react';
 import { AppBar, Toolbar, Typography, Button, Box } from '@mui/material';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { styled } from '@mui/material/styles';
+import SailingIcon from '@mui/icons-material/Sailing';
 
 const StyledAppBar = styled(AppBar)(({ theme }) => ({
   background: 'linear-gradient(145deg, #1a2027 0%, #121212 100%)',
@@ -39,9 +40,13 @@ const Header: React.FC = () => {
   return (
     <StyledAppBar position="sticky" sx={{ top: 0, zIndex: 1100 }}>
       <Toolbar>
-        <Typography variant="h6" component="div" sx={{ flexGrow: 1, color: '#4A919E' }}>
-          Draft Survey
-        </Typography>
+        <Box sx={{ display: 'flex', alignItems: 'center' }}>
+          <SailingIcon sx={{ fontSize: 40, color: '#ff0000', mr: 2 }} />
+          <Typography variant="h6" component="div" sx={{ color: '#4A919E' }}>
+            Draft Survey
+          </Typography>
+        </Box>
+        <Box sx={{ flexGrow: 1 }} />
         <Box>
           <StyledButton 
             onClick={() => navigate('/')}

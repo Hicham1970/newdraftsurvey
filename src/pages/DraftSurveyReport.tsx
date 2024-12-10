@@ -53,35 +53,40 @@ interface FormData {
   forePortInitial: number;
   foreStbdInitial: number;
   foreMeanInitial: number;
-  foreSternCorrectionInitial: number;
+  foreDistanceInitial: number;
+  foreCorrectionInitial: number;
   foreCorrectedInitial: number;
   forePortFinal: number;
   foreStbdFinal: number;
   foreMeanFinal: number;
-  foreSternCorrectionFinal: number;
+  foreDistanceFinal: number;
+  foreCorrectionFinal: number;
   foreCorrectedFinal: number;
-
-  // AFT
+  // Aft
   aftPortInitial: number;
   aftStbdInitial: number;
   aftMeanInitial: number;
-  aftSternCorrectionInitial: number;
+  aftDistanceInitial: number;
+  aftCorrectionInitial: number;
   aftCorrectedInitial: number;
   aftPortFinal: number;
   aftStbdFinal: number;
   aftMeanFinal: number;
-  aftSternCorrectionFinal: number;
+  aftDistanceFinal: number;
+  aftCorrectionFinal: number;
   aftCorrectedFinal: number;
 
   // MID
   midPortInitial: number;
   midStbdInitial: number;
   midMeanInitial: number;
+  midDistanceInitial: number;
   midCorrectionInitial: number;
   midCorrectedInitial: number;
   midPortFinal: number;
   midStbdFinal: number;
   midMeanFinal: number;
+  midDistanceFinal: number;
   midCorrectionFinal: number;
   midCorrectedFinal: number;
 
@@ -151,7 +156,7 @@ const DraftSurveyReport: React.FC = () => {
     blDate: new Date('2024-08-10'),
     portLoading: 'CASABLANCA',
     portDischarging: 'ANTWERP',
-    
+
     flag: 'PANAMA',
     portRegistry: 'PANAMA',
     grossTonnage: 23264.000,
@@ -182,38 +187,44 @@ const DraftSurveyReport: React.FC = () => {
     finalSurveyCommencedTime: new Date('2024-08-10T12:40:00'),
     finalSurveyCompletedDate: new Date('2024-08-10'),
     finalSurveyCompletedTime: new Date('2024-08-10T13:45:00'),
-    
+
     // Initialize other required fields with default values
     forePortInitial: 378.00,
     foreStbdInitial: 376.00,
     foreMeanInitial: 377.00,
-    foreSternCorrectionInitial: -2.23,
-    foreCorrectedInitial: 374.77,
+    foreDistanceInitial: 0.00,
+    foreCorrectionInitial: 0.00,
+    foreCorrectedInitial: 377.00,
     forePortFinal: 958.00,
     foreStbdFinal: 962.00,
     foreMeanFinal: 960.00,
-    foreSternCorrectionFinal: -0.36,
+    foreDistanceFinal: 580.00,
+    foreCorrectionFinal: -0.36,
     foreCorrectedFinal: 959.64,
 
     aftPortInitial: 557.00,
     aftStbdInitial: 587.00,
     aftMeanInitial: 572.00,
-    aftSternCorrectionInitial: 9.60,
+    aftDistanceInitial: 0.00,
+    aftCorrectionInitial: 9.60,
     aftCorrectedInitial: 581.60,
     aftPortFinal: 983.00,
     aftStbdFinal: 991.00,
     aftMeanFinal: 987.00,
-    aftSternCorrectionFinal: 1.33,
+    aftDistanceFinal: 0.00,
+    aftCorrectionFinal: 1.33,
     aftCorrectedFinal: 988.33,
 
     midPortInitial: 482.00,
     midStbdInitial: 488.00,
     midMeanInitial: 485.00,
-    midCorrectionInitial: 0.00,
+    midDistanceInitial: 0.00,
+    midCorrectionInitial: 485.00,
     midCorrectedInitial: 485.00,
     midPortFinal: 968.00,
     midStbdFinal: 981.00,
     midMeanFinal: 974.50,
+    midDistanceFinal: 0.00,
     midCorrectionFinal: 0.00,
     midCorrectedFinal: 974.50,
 
@@ -240,8 +251,8 @@ const DraftSurveyReport: React.FC = () => {
     deduciblesLiquidsFinal: 922.622,
     netLightLoadedDisplacementFinal: 41464.544,
 
-    totalCargoLoadedOnBoard: 32976.252
-  });
+    totalCargoLoadedOnBoard: 32976.252,
+  })
 
   const handleChange = (field: keyof FormData) => (event: React.ChangeEvent<HTMLInputElement>) => {
     setFormData(prev => ({
@@ -612,15 +623,23 @@ const DraftSurveyReport: React.FC = () => {
                     <Grid item xs={12}>
                       <StyledTextField
                         fullWidth
-                        label="Stern Correction"
-                        value={formData.foreSternCorrectionInitial}
-                        onChange={handleChange('foreSternCorrectionInitial')}
+                        label="Fore Distance"
+                        value={formData.foreDistanceInitial}
+                        onChange={handleChange('foreDistanceInitial')}
                       />
                     </Grid>
                     <Grid item xs={12}>
                       <StyledTextField
                         fullWidth
-                        label="Corrected"
+                        label="Fore Correction"
+                        value={formData.foreCorrectionInitial}
+                        onChange={handleChange('foreCorrectionInitial')}
+                      />
+                    </Grid>
+                    <Grid item xs={12}>
+                      <StyledTextField
+                        fullWidth
+                        label="Fore Corrected"
                         value={formData.foreCorrectedInitial}
                         onChange={handleChange('foreCorrectedInitial')}
                       />
@@ -659,15 +678,23 @@ const DraftSurveyReport: React.FC = () => {
                     <Grid item xs={12}>
                       <StyledTextField
                         fullWidth
-                        label="Stern Correction"
-                        value={formData.aftSternCorrectionInitial}
-                        onChange={handleChange('aftSternCorrectionInitial')}
+                        label="Aft Distance"
+                        value={formData.aftDistanceInitial}
+                        onChange={handleChange('aftDistanceInitial')}
                       />
                     </Grid>
                     <Grid item xs={12}>
                       <StyledTextField
                         fullWidth
-                        label="Corrected"
+                        label="Aft Correction"
+                        value={formData.aftCorrectionInitial}
+                        onChange={handleChange('aftCorrectionInitial')}
+                      />
+                    </Grid>
+                    <Grid item xs={12}>
+                      <StyledTextField
+                        fullWidth
+                        label="Aft Corrected"
                         value={formData.aftCorrectedInitial}
                         onChange={handleChange('aftCorrectedInitial')}
                       />
@@ -706,7 +733,15 @@ const DraftSurveyReport: React.FC = () => {
                     <Grid item xs={12}>
                       <StyledTextField
                         fullWidth
-                        label="Correction"
+                        label="Mid Distance"
+                        value={formData.midDistanceInitial}
+                        onChange={handleChange('midDistanceInitial')}
+                      />
+                    </Grid>
+                    <Grid item xs={12}>
+                      <StyledTextField
+                        fullWidth
+                        label="Mid Correction"
                         value={formData.midCorrectionInitial}
                         onChange={handleChange('midCorrectionInitial')}
                       />
@@ -714,7 +749,7 @@ const DraftSurveyReport: React.FC = () => {
                     <Grid item xs={12}>
                       <StyledTextField
                         fullWidth
-                        label="Corrected"
+                        label="Mid Corrected"
                         value={formData.midCorrectedInitial}
                         onChange={handleChange('midCorrectedInitial')}
                       />
@@ -790,15 +825,23 @@ const DraftSurveyReport: React.FC = () => {
                     <Grid item xs={12}>
                       <StyledTextField
                         fullWidth
-                        label="Stern Correction"
-                        value={formData.foreSternCorrectionFinal}
-                        onChange={handleChange('foreSternCorrectionFinal')}
+                        label="Fore Distance"
+                        value={formData.foreDistanceFinal}
+                        onChange={handleChange('foreDistanceFinal')}
                       />
                     </Grid>
                     <Grid item xs={12}>
                       <StyledTextField
                         fullWidth
-                        label="Corrected"
+                        label="Fore Correction"
+                        value={formData.foreCorrectionFinal}
+                        onChange={handleChange('foreCorrectionFinal')}
+                      />
+                    </Grid>
+                    <Grid item xs={12}>
+                      <StyledTextField
+                        fullWidth
+                        label="Fore Corrected"
                         value={formData.foreCorrectedFinal}
                         onChange={handleChange('foreCorrectedFinal')}
                       />
@@ -837,15 +880,23 @@ const DraftSurveyReport: React.FC = () => {
                     <Grid item xs={12}>
                       <StyledTextField
                         fullWidth
-                        label="Stern Correction"
-                        value={formData.aftSternCorrectionFinal}
-                        onChange={handleChange('aftSternCorrectionFinal')}
+                        label="Aft Distance"
+                        value={formData.aftDistanceFinal}
+                        onChange={handleChange('aftDistanceFinal')}
                       />
                     </Grid>
                     <Grid item xs={12}>
                       <StyledTextField
                         fullWidth
-                        label="Corrected"
+                        label="Aft Correction"
+                        value={formData.aftCorrectionFinal}
+                        onChange={handleChange('aftCorrectionFinal')}
+                      />
+                    </Grid>
+                    <Grid item xs={12}>
+                      <StyledTextField
+                        fullWidth
+                        label="Aft Corrected"
                         value={formData.aftCorrectedFinal}
                         onChange={handleChange('aftCorrectedFinal')}
                       />
@@ -884,7 +935,15 @@ const DraftSurveyReport: React.FC = () => {
                     <Grid item xs={12}>
                       <StyledTextField
                         fullWidth
-                        label="Correction"
+                        label="Mid Distance"
+                        value={formData.midDistanceFinal}
+                        onChange={handleChange('midDistanceFinal')}
+                      />
+                    </Grid>
+                    <Grid item xs={12}>
+                      <StyledTextField
+                        fullWidth
+                        label="Mid Correction"
                         value={formData.midCorrectionFinal}
                         onChange={handleChange('midCorrectionFinal')}
                       />
@@ -892,7 +951,7 @@ const DraftSurveyReport: React.FC = () => {
                     <Grid item xs={12}>
                       <StyledTextField
                         fullWidth
-                        label="Corrected"
+                        label="Mid Corrected"
                         value={formData.midCorrectedFinal}
                         onChange={handleChange('midCorrectedFinal')}
                       />

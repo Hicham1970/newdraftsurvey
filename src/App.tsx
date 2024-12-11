@@ -9,6 +9,7 @@ import ValeursInitial from './pages/ValeursInitial';
 import ValeursFinal from './pages/ValeursFinal';
 import Caracteristiques from './pages/Caracteristiques';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { SnackbarProvider } from 'notistack';
 
 const darkTheme = createTheme({
   palette: {
@@ -33,23 +34,25 @@ function App() {
   return (
     <ThemeProvider theme={darkTheme}>
       <CssBaseline />
-      <Router>
-        <div style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
-          <Header />
-          <main style={{ flex: 1 }}>
-            <Routes>
-              <Route path="/" element={<Infos />} />
-              <Route path="/caracteristics" element={<Caracteristiques />} />
-              <Route path="/initial-values" element={<ValeursInitial />} />
-              <Route path="/final-values" element={<ValeursFinal />} />
-              <Route path="/calculation" element={<Calculation />} />
-            </Routes>
-          </main>
-          <Footer />
-        </div>
-      </Router>
+      <SnackbarProvider maxSnack={3} autoHideDuration={3000}>
+        <Router>
+          <div style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
+            <Header />
+            <main style={{ flex: 1 }}>
+              <Routes>
+                <Route path="/" element={<Infos />} />
+                <Route path="/caracteristics" element={<Caracteristiques />} />
+                <Route path="/initial-values" element={<ValeursInitial />} />
+                <Route path="/final-values" element={<ValeursFinal />} />
+                <Route path="/calculation" element={<Calculation />} />
+              </Routes>
+            </main>
+            <Footer />
+          </div>
+        </Router>
+      </SnackbarProvider>
     </ThemeProvider>
   );
 }
 
-export default App; 
+export default App;

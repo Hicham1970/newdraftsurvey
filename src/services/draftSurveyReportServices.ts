@@ -94,7 +94,7 @@ export interface IDSReport {
   meanOfMeanFinal: number;
   quarterMeanFinal: number;
   // Displacement Calculations
-  correspondingDisplacementInitial: number;
+  correspondingDisplInitial: number;
   trimCorrectionInitial: number;
   correctedDisplacementForTrimInitial: number;
   densityDockWaterInitial: number;
@@ -102,7 +102,7 @@ export interface IDSReport {
   deductiblesLiquidsInitial: number;
   netLightLoadedDisplacementInitial: number;
 
-  correspondingDisplacementFinal: number;
+  correspondingDisplFinal: number;
   trimCorrectionFinal: number;
   correctedDisplacementForTrimFinal: number;
   densityDockWaterFinal: number;

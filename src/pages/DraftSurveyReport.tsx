@@ -100,9 +100,10 @@ interface FormData {
   meanForeAftFinal: number;
   meanOfMeanFinal: number;
   quarterMeanFinal: number;
-
+  kellCorrectionInitial: number;
+  kellCorrectionFinal: number;
   // Displacement Calculations
-  correspondingDisplacementInitial: number;
+  correspondingDisplInitial: number;
   trimCorrectionInitial: number;
   correctedDisplacementForTrimInitial: number;
   densityDockWaterInitial: number;
@@ -110,7 +111,7 @@ interface FormData {
   deductiblesLiquidsInitial: number;
   netLightLoadedDisplacementInitial: number;
 
-  correspondingDisplacementFinal: number;
+  correspondingDisplFinal: number;
   trimCorrectionFinal: number;
   correctedDisplacementForTrimFinal: number;
   densityDockWaterFinal: number;
@@ -153,9 +154,9 @@ const StyledTextField = styled(TextField)({
 const DraftSurveyReport: React.FC = () => {
   const [formData, setFormData] = useState<FormData>({
     // Initialize with values from the photo
-    vessel: "DRINA S",
+    vessel: "Marina S",
     cargo: "PHOSPHATE IN BULK",
-    blWeight: 33000000,
+    blWeight: 33_000_000,
     blDate: new Date("2024-08-10"),
     portLoading: "CASABLANCA",
     portDischarging: "ANTWERP",
@@ -234,11 +235,13 @@ const DraftSurveyReport: React.FC = () => {
     meanForeAftInitial: 4.78,
     meanOfMeanInitial: 4.81,
     quarterMeanInitial: 4.83,
+    kellCorrectionInitial: 0.0,
     meanForeAftFinal: 9.73,
     meanOfMeanFinal: 9.74,
     quarterMeanFinal: 9.74,
+    kellCorrectionFinal: 0.0,
 
-    correspondingDisplacementInitial: 20093.9,
+    correspondingDisplInitial: 20093.9,
     trimCorrectionInitial: -2.75,
     correctedDisplacementForTrimInitial: 19818.199,
     densityDockWaterInitial: 1.024,
@@ -246,7 +249,7 @@ const DraftSurveyReport: React.FC = () => {
     deductiblesLiquidsInitial: 11310.572,
     netLightLoadedDisplacementInitial: 8488.292,
 
-    correspondingDisplacementFinal: 42463.76,
+    correspondingDisplFinal: 42463.76,
     trimCorrectionFinal: -35.2,
     correctedDisplacementForTrimFinal: 42428.56,
     densityDockWaterFinal: 1.024,
@@ -272,7 +275,7 @@ const DraftSurveyReport: React.FC = () => {
     try {
       await draftSurveyReportService.createReport(formData);
       enqueueSnackbar(
-        "Rapport d'enquête de tirant d'eau sauvegardé avec succès !",
+        "Rapport du Draft Survey a été sauvegardé avec succès !",
         { variant: "success" }
       );
     } catch (error) {
@@ -424,6 +427,7 @@ const DraftSurveyReport: React.FC = () => {
                     fullWidth
                     label="LBP"
                     value={formData.lbp}
+                    id="lbp"  
                     onChange={handleChange("lbp")}
                   />
                 </Grid>
@@ -647,6 +651,7 @@ const DraftSurveyReport: React.FC = () => {
                     variant="subtitle2"
                     gutterBottom
                     sx={{ color: "#ffffff" }}
+                    
                   >
                     FORE
                   </Typography>
@@ -656,6 +661,7 @@ const DraftSurveyReport: React.FC = () => {
                         fullWidth
                         label="Port"
                         value={formData.forePortInitial}
+                        id="forePortinitial"
                         onChange={handleChange("forePortInitial")}
                       />
                     </Grid>
@@ -664,6 +670,7 @@ const DraftSurveyReport: React.FC = () => {
                         fullWidth
                         label="Stbd"
                         value={formData.foreStbdInitial}
+                        id="foreStbdInitial"
                         onChange={handleChange("foreStbdInitial")}
                       />
                     </Grid>
@@ -671,6 +678,7 @@ const DraftSurveyReport: React.FC = () => {
                       <StyledTextField
                         fullWidth
                         label="Mean"
+                        id="foreMeanInitial"
                         value={formData.foreMeanInitial}
                         onChange={handleChange("foreMeanInitial")}
                       />
@@ -679,6 +687,7 @@ const DraftSurveyReport: React.FC = () => {
                       <StyledTextField
                         fullWidth
                         label="Fore Distance"
+                        id="foreDistanceInitial"
                         value={formData.foreDistanceInitial}
                         onChange={handleChange("foreDistanceInitial")}
                       />
@@ -687,6 +696,7 @@ const DraftSurveyReport: React.FC = () => {
                       <StyledTextField
                         fullWidth
                         label="Fore Correction"
+                        id="foreCorrectionInitial"
                         value={formData.foreCorrectionInitial}
                         onChange={handleChange("foreCorrectionInitial")}
                       />
@@ -695,6 +705,7 @@ const DraftSurveyReport: React.FC = () => {
                       <StyledTextField
                         fullWidth
                         label="Fore Corrected"
+                        id="foreCorrectedInitial"
                         value={formData.foreCorrectedInitial}
                         onChange={handleChange("foreCorrectedInitial")}
                       />
@@ -714,6 +725,7 @@ const DraftSurveyReport: React.FC = () => {
                       <StyledTextField
                         fullWidth
                         label="Port"
+                        id="aftPortInitial"
                         value={formData.aftPortInitial}
                         onChange={handleChange("aftPortInitial")}
                       />
@@ -722,6 +734,7 @@ const DraftSurveyReport: React.FC = () => {
                       <StyledTextField
                         fullWidth
                         label="Stbd"
+                        id="aftStbdInitial"
                         value={formData.aftStbdInitial}
                         onChange={handleChange("aftStbdInitial")}
                       />
@@ -730,6 +743,7 @@ const DraftSurveyReport: React.FC = () => {
                       <StyledTextField
                         fullWidth
                         label="Mean"
+                        id="aftMeanInitial"
                         value={formData.aftMeanInitial}
                         onChange={handleChange("aftMeanInitial")}
                       />
@@ -738,6 +752,7 @@ const DraftSurveyReport: React.FC = () => {
                       <StyledTextField
                         fullWidth
                         label="Aft Distance"
+                        id="aftDistanceInitial"
                         value={formData.aftDistanceInitial}
                         onChange={handleChange("aftDistanceInitial")}
                       />
@@ -746,6 +761,7 @@ const DraftSurveyReport: React.FC = () => {
                       <StyledTextField
                         fullWidth
                         label="Aft Correction"
+                        id="aftCorrectionInitial"
                         value={formData.aftCorrectionInitial}
                         onChange={handleChange("aftCorrectionInitial")}
                       />
@@ -754,6 +770,7 @@ const DraftSurveyReport: React.FC = () => {
                       <StyledTextField
                         fullWidth
                         label="Aft Corrected"
+                        id="aftCorrectedInitial"
                         value={formData.aftCorrectedInitial}
                         onChange={handleChange("aftCorrectedInitial")}
                       />
@@ -773,6 +790,7 @@ const DraftSurveyReport: React.FC = () => {
                       <StyledTextField
                         fullWidth
                         label="Port"
+                        id="midPortInitial"
                         value={formData.midPortInitial}
                         onChange={handleChange("midPortInitial")}
                       />
@@ -781,6 +799,7 @@ const DraftSurveyReport: React.FC = () => {
                       <StyledTextField
                         fullWidth
                         label="Stbd"
+                        id="midStbdInitial"
                         value={formData.midStbdInitial}
                         onChange={handleChange("midStbdInitial")}
                       />
@@ -789,6 +808,7 @@ const DraftSurveyReport: React.FC = () => {
                       <StyledTextField
                         fullWidth
                         label="Mean"
+                        id="midMeanInitial"
                         value={formData.midMeanInitial}
                         onChange={handleChange("midMeanInitial")}
                       />
@@ -797,6 +817,7 @@ const DraftSurveyReport: React.FC = () => {
                       <StyledTextField
                         fullWidth
                         label="Mid Distance"
+                        id="midDistanceInitial"
                         value={formData.midDistanceInitial}
                         onChange={handleChange("midDistanceInitial")}
                       />
@@ -805,6 +826,7 @@ const DraftSurveyReport: React.FC = () => {
                       <StyledTextField
                         fullWidth
                         label="Mid Correction"
+                        id="midCorrectionInitial"
                         value={formData.midCorrectionInitial}
                         onChange={handleChange("midCorrectionInitial")}
                       />
@@ -813,6 +835,7 @@ const DraftSurveyReport: React.FC = () => {
                       <StyledTextField
                         fullWidth
                         label="Mid Corrected"
+                        id="midCorrectedInitial"
                         value={formData.midCorrectedInitial}
                         onChange={handleChange("midCorrectedInitial")}
                       />
@@ -832,6 +855,7 @@ const DraftSurveyReport: React.FC = () => {
                       <StyledTextField
                         fullWidth
                         label="Mean Fore/Aft"
+                        id="meanForeAftInitial"
                         value={formData.meanForeAftInitial}
                         onChange={handleChange("meanForeAftInitial")}
                       />
@@ -840,6 +864,7 @@ const DraftSurveyReport: React.FC = () => {
                       <StyledTextField
                         fullWidth
                         label="Mean of Mean"
+                        id="meanOfMeanInitial"
                         value={formData.meanOfMeanInitial}
                         onChange={handleChange("meanOfMeanInitial")}
                       />
@@ -847,7 +872,17 @@ const DraftSurveyReport: React.FC = () => {
                     <Grid item xs={12}>
                       <StyledTextField
                         fullWidth
+                        label="Kell Correction Initial"
+                        id="kellCorrectionInitial"
+                        value={formData.kellCorrectionInitial}
+                        onChange={handleChange("kellCorrectionInitial")}
+                      />
+                    </Grid>
+                    <Grid item xs={12}>
+                      <StyledTextField
+                        fullWidth
                         label="Quarter Mean"
+                        id="quarterMeanInitial"
                         value={formData.quarterMeanInitial}
                         onChange={handleChange("quarterMeanInitial")}
                       />
@@ -877,6 +912,7 @@ const DraftSurveyReport: React.FC = () => {
                       <StyledTextField
                         fullWidth
                         label="Port"
+                        id="forePortFinal"
                         value={formData.forePortFinal}
                         onChange={handleChange("forePortFinal")}
                       />
@@ -885,6 +921,7 @@ const DraftSurveyReport: React.FC = () => {
                       <StyledTextField
                         fullWidth
                         label="Stbd"
+                        id="foreStbdFinal"
                         value={formData.foreStbdFinal}
                         onChange={handleChange("foreStbdFinal")}
                       />
@@ -893,6 +930,7 @@ const DraftSurveyReport: React.FC = () => {
                       <StyledTextField
                         fullWidth
                         label="Mean"
+                        id="foreMeanFinal"
                         value={formData.foreMeanFinal}
                         onChange={handleChange("foreMeanFinal")}
                       />
@@ -901,6 +939,7 @@ const DraftSurveyReport: React.FC = () => {
                       <StyledTextField
                         fullWidth
                         label="Fore Distance"
+                        id="foreDistanceFinal"
                         value={formData.foreDistanceFinal}
                         onChange={handleChange("foreDistanceFinal")}
                       />
@@ -909,6 +948,7 @@ const DraftSurveyReport: React.FC = () => {
                       <StyledTextField
                         fullWidth
                         label="Fore Correction"
+                        id="foreCorrectionFinal"
                         value={formData.foreCorrectionFinal}
                         onChange={handleChange("foreCorrectionFinal")}
                       />
@@ -917,6 +957,7 @@ const DraftSurveyReport: React.FC = () => {
                       <StyledTextField
                         fullWidth
                         label="Fore Corrected"
+                        id="foreCorrectedFinal"
                         value={formData.foreCorrectedFinal}
                         onChange={handleChange("foreCorrectedFinal")}
                       />
@@ -936,6 +977,7 @@ const DraftSurveyReport: React.FC = () => {
                       <StyledTextField
                         fullWidth
                         label="Port"
+                        id="aftPortFinal"
                         value={formData.aftPortFinal}
                         onChange={handleChange("aftPortFinal")}
                       />
@@ -944,6 +986,7 @@ const DraftSurveyReport: React.FC = () => {
                       <StyledTextField
                         fullWidth
                         label="Stbd"
+                        id="aftStbdFinal"
                         value={formData.aftStbdFinal}
                         onChange={handleChange("aftStbdFinal")}
                       />
@@ -952,6 +995,7 @@ const DraftSurveyReport: React.FC = () => {
                       <StyledTextField
                         fullWidth
                         label="Mean"
+                        id="aftMeanFinal"
                         value={formData.aftMeanFinal}
                         onChange={handleChange("aftMeanFinal")}
                       />
@@ -960,6 +1004,7 @@ const DraftSurveyReport: React.FC = () => {
                       <StyledTextField
                         fullWidth
                         label="Aft Distance"
+                        id="aftDistanceFinal"
                         value={formData.aftDistanceFinal}
                         onChange={handleChange("aftDistanceFinal")}
                       />
@@ -968,6 +1013,7 @@ const DraftSurveyReport: React.FC = () => {
                       <StyledTextField
                         fullWidth
                         label="Aft Correction"
+                        id="aftCorrectionFinal"
                         value={formData.aftCorrectionFinal}
                         onChange={handleChange("aftCorrectionFinal")}
                       />
@@ -976,6 +1022,7 @@ const DraftSurveyReport: React.FC = () => {
                       <StyledTextField
                         fullWidth
                         label="Aft Corrected"
+                        id="aftCorrectedFinal"
                         value={formData.aftCorrectedFinal}
                         onChange={handleChange("aftCorrectedFinal")}
                       />
@@ -995,6 +1042,7 @@ const DraftSurveyReport: React.FC = () => {
                       <StyledTextField
                         fullWidth
                         label="Port"
+                        id="midPortFinal"
                         value={formData.midPortFinal}
                         onChange={handleChange("midPortFinal")}
                       />
@@ -1003,6 +1051,7 @@ const DraftSurveyReport: React.FC = () => {
                       <StyledTextField
                         fullWidth
                         label="Stbd"
+                        id="midStbdFinal"
                         value={formData.midStbdFinal}
                         onChange={handleChange("midStbdFinal")}
                       />
@@ -1011,6 +1060,7 @@ const DraftSurveyReport: React.FC = () => {
                       <StyledTextField
                         fullWidth
                         label="Mean"
+                        id="midMeanFinal"
                         value={formData.midMeanFinal}
                         onChange={handleChange("midMeanFinal")}
                       />
@@ -1019,6 +1069,7 @@ const DraftSurveyReport: React.FC = () => {
                       <StyledTextField
                         fullWidth
                         label="Mid Distance"
+                        id="midDistanceFinal"
                         value={formData.midDistanceFinal}
                         onChange={handleChange("midDistanceFinal")}
                       />
@@ -1027,6 +1078,7 @@ const DraftSurveyReport: React.FC = () => {
                       <StyledTextField
                         fullWidth
                         label="Mid Correction"
+                        id="midCorrectionFinal"
                         value={formData.midCorrectionFinal}
                         onChange={handleChange("midCorrectionFinal")}
                       />
@@ -1035,6 +1087,7 @@ const DraftSurveyReport: React.FC = () => {
                       <StyledTextField
                         fullWidth
                         label="Mid Corrected"
+                        id="midCorrectedFinal"
                         value={formData.midCorrectedFinal}
                         onChange={handleChange("midCorrectedFinal")}
                       />
@@ -1054,6 +1107,7 @@ const DraftSurveyReport: React.FC = () => {
                       <StyledTextField
                         fullWidth
                         label="Mean Fore/Aft"
+                        id="meanForeAftFinal"
                         value={formData.meanForeAftFinal}
                         onChange={handleChange("meanForeAftFinal")}
                       />
@@ -1062,6 +1116,7 @@ const DraftSurveyReport: React.FC = () => {
                       <StyledTextField
                         fullWidth
                         label="Mean of Mean"
+                        id="meanOfMeanFinal"
                         value={formData.meanOfMeanFinal}
                         onChange={handleChange("meanOfMeanFinal")}
                       />
@@ -1069,7 +1124,17 @@ const DraftSurveyReport: React.FC = () => {
                     <Grid item xs={12}>
                       <StyledTextField
                         fullWidth
+                        label="Kell Correction Final"
+                        id="kellCorrectionFinal"
+                        value={formData.kellCorrectionFinal}
+                        onChange={handleChange("kellCorrectionFinal")}
+                      />
+                    </Grid>
+                    <Grid item xs={12}>
+                      <StyledTextField
+                        fullWidth
                         label="Quarter Mean"
+                        id="quarterMeanFinal"
                         value={formData.quarterMeanFinal}
                         onChange={handleChange("quarterMeanFinal")}
                       />
@@ -1100,9 +1165,10 @@ const DraftSurveyReport: React.FC = () => {
                       <StyledTextField
                         fullWidth
                         label="Corresponding Displacement"
-                        value={formData.correspondingDisplacementInitial}
+                        id="correspondingDisplInitial"
+                        value={formData.correspondingDisplInitial}
                         onChange={handleChange(
-                          "correspondingDisplacementInitial"
+                          "correspondingDisplInitial"
                         )}
                       />
                     </Grid>
@@ -1110,6 +1176,7 @@ const DraftSurveyReport: React.FC = () => {
                       <StyledTextField
                         fullWidth
                         label="Trim Correction"
+                        id="trimCorrectionInitial"
                         value={formData.trimCorrectionInitial}
                         onChange={handleChange("trimCorrectionInitial")}
                       />
@@ -1118,6 +1185,7 @@ const DraftSurveyReport: React.FC = () => {
                       <StyledTextField
                         fullWidth
                         label="Corrected Displacement For Trim"
+                        id="correctedDisplacementForTrimInitial"
                         value={formData.correctedDisplacementForTrimInitial}
                         onChange={handleChange(
                           "correctedDisplacementForTrimInitial"
@@ -1128,6 +1196,7 @@ const DraftSurveyReport: React.FC = () => {
                       <StyledTextField
                         fullWidth
                         label="Density of Dock Water"
+                        id="densityDockWaterInitial"
                         value={formData.densityDockWaterInitial}
                         onChange={handleChange("densityDockWaterInitial")}
                       />
@@ -1136,6 +1205,7 @@ const DraftSurveyReport: React.FC = () => {
                       <StyledTextField
                         fullWidth
                         label="Corrected Displacement For Density"
+                        id="correctedDisplacementForDensityInitial"
                         value={formData.correctedDisplacementForDensityInitial}
                         onChange={handleChange(
                           "correctedDisplacementForDensityInitial"
@@ -1146,6 +1216,7 @@ const DraftSurveyReport: React.FC = () => {
                       <StyledTextField
                         fullWidth
                         label="Deductibles Liquids"
+                        id="deductiblesLiquidsInitial"
                         value={formData.deductiblesLiquidsInitial}
                         onChange={handleChange("deductiblesLiquidsInitial")}
                       />
@@ -1154,6 +1225,7 @@ const DraftSurveyReport: React.FC = () => {
                       <StyledTextField
                         fullWidth
                         label="Net Light/Loaded Displacement"
+                        id="netLightLoadDisplacementInitial"
                         value={formData.netLightLoadedDisplacementInitial}
                         onChange={handleChange(
                           "netLightLoadedDisplacementInitial"
@@ -1176,9 +1248,10 @@ const DraftSurveyReport: React.FC = () => {
                       <StyledTextField
                         fullWidth
                         label="Corresponding Displacement"
-                        value={formData.correspondingDisplacementFinal}
+                        id="correspondingDisplFinal"
+                        value={formData.correspondingDisplFinal}
                         onChange={handleChange(
-                          "correspondingDisplacementFinal"
+                          "correspondingDisplFinal"
                         )}
                       />
                     </Grid>
@@ -1186,6 +1259,7 @@ const DraftSurveyReport: React.FC = () => {
                       <StyledTextField
                         fullWidth
                         label="Trim Correction"
+                        id="trimCorrectionFinal"
                         value={formData.trimCorrectionFinal}
                         onChange={handleChange("trimCorrectionFinal")}
                       />
@@ -1194,6 +1268,7 @@ const DraftSurveyReport: React.FC = () => {
                       <StyledTextField
                         fullWidth
                         label="Corrected Displacement For Trim"
+                        id="correctedDisplacementForTrimFinal"
                         value={formData.correctedDisplacementForTrimFinal}
                         onChange={handleChange(
                           "correctedDisplacementForTrimFinal"
@@ -1204,6 +1279,7 @@ const DraftSurveyReport: React.FC = () => {
                       <StyledTextField
                         fullWidth
                         label="Density of Dock Water"
+                        id="densityDockWaterFinal"
                         value={formData.densityDockWaterFinal}
                         onChange={handleChange("densityDockWaterFinal")}
                       />
@@ -1212,6 +1288,7 @@ const DraftSurveyReport: React.FC = () => {
                       <StyledTextField
                         fullWidth
                         label="Corrected Displacement For Density"
+                        id="correctedDisplacementForDensityfinal"
                         value={formData.correctedDisplacementForDensityFinal}
                         onChange={handleChange(
                           "correctedDisplacementForDensityFinal"
@@ -1222,6 +1299,7 @@ const DraftSurveyReport: React.FC = () => {
                       <StyledTextField
                         fullWidth
                         label="Deductibles Liquids"
+                        id="deductiblesLiquidsFinal"
                         value={formData.deductiblesLiquidsFinal}
                         onChange={handleChange("deductiblesLiquidsFinal")}
                       />
@@ -1230,6 +1308,7 @@ const DraftSurveyReport: React.FC = () => {
                       <StyledTextField
                         fullWidth
                         label="Net Light/Loaded Displacement"
+                        id="netLightLoadDisplacementFinal"
                         value={formData.netLightLoadedDisplacementFinal}
                         onChange={handleChange(
                           "netLightLoadedDisplacementFinal"
@@ -1253,6 +1332,7 @@ const DraftSurveyReport: React.FC = () => {
                   <StyledTextField
                     fullWidth
                     label="Total Cargo Loaded on Board"
+                    id="totalCargoLoadedOnBoard"
                     value={formData.totalCargoLoadedOnBoard}
                     onChange={handleChange("totalCargoLoadedOnBoard")}
                     InputProps={{

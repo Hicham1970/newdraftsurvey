@@ -4,7 +4,7 @@ import CssBaseline from '@mui/material/CssBaseline';
 import Header from './components/Header';
 import Footer from './components/Footer';
 import Infos from './pages/Infos';
-import Calculation from './pages/Calculation';
+import DraftSurveyReport from './pages/DraftSurveyReport';
 import ValeursInitial from './pages/ValeursInitial';
 import ValeursFinal from './pages/ValeursFinal';
 import Caracteristiques from './pages/Caracteristiques';
@@ -44,7 +44,7 @@ function App() {
                 <Route path="/caracteristics" element={<Caracteristiques />} />
                 <Route path="/initial-values" element={<ValeursInitial />} />
                 <Route path="/final-values" element={<ValeursFinal />} />
-                <Route path="/calculation" element={<Calculation />} />
+                <Route path="/calculation" element={<DraftSurveyReport />} />
               </Routes>
             </main>
             <Footer />

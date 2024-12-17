@@ -93,6 +93,8 @@ export interface IDSReport {
   meanForeAftFinal: number;
   meanOfMeanFinal: number;
   quarterMeanFinal: number;
+  keelCorrectionInitial: number;
+  keelCorrectionFinal: number;
   // Displacement Calculations
   correspondingDisplInitial: number;
   trimCorrectionInitial: number;

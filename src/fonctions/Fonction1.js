@@ -74,8 +74,9 @@ const totalCargoLoadedOnBoard = document.getElementById("totalCargoLoadedOnBoard
 /**Le LBP et le LBM */
 const lbp=document.getElementById("lbp");
 // const lbm=document.getElementById("lbm");
-/**THE KILL CORRECTION */ 
-const keelCorrection=document.getElementById("keelCorrection");
+/**THE KELL CORRECTION */ 
+const keelCorrectionInitial=document.getElementById("keelCorrectionInitial");
+const keelCorrectionFinal=document.getElementById("keelCorrectionFinal");
 /*Les draft Observés*/
 
 /**Assigner un rôle au btnCalc */
@@ -188,7 +189,7 @@ export default Function calculateValues () {
     const quarterMeanFinal = ((meanOfMeanFinal + midCorrectedFinal) / 2).toFixed(2);
 
    // Calculate Displacements:
-    
+
     // Update form data with calculated values
     setFormData(prev => ({
       ...prev,
@@ -207,7 +208,9 @@ export default Function calculateValues () {
       quarterMeanInitial: quarterMeanInitial,
       meanForeAftFinal: meanForeAftFinal,
       meanOfMeanFinal: meanOfMeanFinal,
-      quarterMeanFinal: quarterMeanFinal
+      quarterMeanFinal: quarterMeanFinal,
+      keelCorrectionInitial: keelCorrectionInitial,
+      keelCorrectionFinal: keelCorrectionFinal
     }));
 
   } catch (error) {

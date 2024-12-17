@@ -92,6 +92,8 @@ interface FormData {
   midDistanceFinal: number;
   midCorrectionFinal: number;
   midCorrectedFinal: number;
+  keelCorrectionInitial: number;
+  keelCorrectionFinal: number;
 
   // Means
   meanForeAftInitial: number;
@@ -100,8 +102,7 @@ interface FormData {
   meanForeAftFinal: number;
   meanOfMeanFinal: number;
   quarterMeanFinal: number;
-  kellCorrectionInitial: number;
-  kellCorrectionFinal: number;
+  
   // Displacement Calculations
   correspondingDisplInitial: number;
   trimCorrectionInitial: number;
@@ -235,11 +236,11 @@ const DraftSurveyReport: React.FC = () => {
     meanForeAftInitial: 4.78,
     meanOfMeanInitial: 4.81,
     quarterMeanInitial: 4.83,
-    kellCorrectionInitial: 0.0,
+    keelCorrectionInitial: 2.0,
     meanForeAftFinal: 9.73,
     meanOfMeanFinal: 9.74,
     quarterMeanFinal: 9.74,
-    kellCorrectionFinal: 0.0,
+    keelCorrectionFinal: 2.0,
 
     correspondingDisplInitial: 20093.9,
     trimCorrectionInitial: -2.75,
@@ -257,7 +258,7 @@ const DraftSurveyReport: React.FC = () => {
     deductiblesLiquidsFinal: 922.622,
     netLightLoadedDisplacementFinal: 41464.544,
 
-    totalCargoLoadedOnBoard: 32976.252,
+    totalCargoLoadedOnBoard: 32976.00,
   });
 
   const { enqueueSnackbar } = useSnackbar();
@@ -873,9 +874,9 @@ const DraftSurveyReport: React.FC = () => {
                       <StyledTextField
                         fullWidth
                         label="Kell Correction Initial"
-                        id="kellCorrectionInitial"
-                        value={formData.kellCorrectionInitial}
-                        onChange={handleChange("kellCorrectionInitial")}
+                        id="keelCorrectionInitial"
+                        value={formData.keelCorrectionInitial}
+                        onChange={handleChange("keelCorrectionInitial")}
                       />
                     </Grid>
                     <Grid item xs={12}>
@@ -1124,10 +1125,10 @@ const DraftSurveyReport: React.FC = () => {
                     <Grid item xs={12}>
                       <StyledTextField
                         fullWidth
-                        label="Kell Correction Final"
-                        id="kellCorrectionFinal"
-                        value={formData.kellCorrectionFinal}
-                        onChange={handleChange("kellCorrectionFinal")}
+                        label="Keel Correction Final"
+                        id="keelCorrectionFinal"
+                        value={formData.keelCorrectionFinal}
+                        onChange={handleChange("keelCorrectionFinal")}
                       />
                     </Grid>
                     <Grid item xs={12}>

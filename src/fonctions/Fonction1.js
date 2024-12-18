@@ -1,6 +1,6 @@
 import { FunctionsOutlined } from "@mui/icons-material";
 import DraftSurveyReport from "../pages/DraftSurveyReport"; 
-
+import { useState } from "react";
 
 /**Les distances drafts marks-perpendiculaires */
 const foreDistanceInitial=document.getElementById("distanceForeInitial");
@@ -72,26 +72,51 @@ const netLightLoadedDisplacementFinal = document.getElementById("netLightLoadedD
 const totalCargoLoadedOnBoard = document.getElementById("totalCargoLoadedOnBoard");
 
 /**Le LBP et le LBM */
-const lbp=document.getElementById("lbp");
-// const lbm=document.getElementById("lbm");
-/**THE KELL CORRECTION */ 
-const keelCorrectionInitial=document.getElementById("keelCorrectionInitial");
-const keelCorrectionFinal=document.getElementById("keelCorrectionFinal");
+const lbp = document.getElementById('lbp');
+const keelCorrectionInitial = document.getElementById('keelCorrectionInitial');
+const keelCorrectionFinal = document.getElementById('keelCorrectionFinal');
+/**THE KEEL CORRECTION */ 
+// const keelCorrectionInitial=document.getElementById("keelCorrectionInitial");
+// const keelCorrectionFinal=document.getElementById("keelCorrectionFinal");
 /*Les draft Observés*/
 
 /**Assigner un rôle au btnCalc */
 
-export default Function calculateValues () {
+export default function CalculateValues(formData: DraftSurveyFormData) {
+  const [formDataState, setFormData] = useState({ 
+    forePortInitial: forePortInitial.value, 
+    foreStbdInitial: foreStbdInitial.value, 
+    aftPortInitial: aftPortInitial.value, 
+    aftStbdInitial: aftStbdInitial.value,
+    forePortFinal: forePortFinal.value, 
+    foreStbdFinal: foreStbdFinal.value, 
+    aftPortFinal: aftPortFinal.value, 
+    aftStbdFinal: aftStbdFinal.value,
+    midPortInitial: midPortInitial.value, 
+    midStbdInitial: midStbdInitial.value,
+    midPortFinal: midPortFinal.value, 
+    midStbdFinal: midStbdFinal.value,
+    foreDistanceInitial: foreDistanceInitial.value,
+    aftDistanceInitial: aftDistanceInitial.value,
+    midDistanceInitial: midDistanceInitial.value,
+    foreDistanceFinal: foreDistanceFinal.value,
+    aftDistanceFinal: aftDistanceFinal.value,
+    midDistanceFinal: midDistanceFinal.value,
+    lbp: lbp.value,
+    keelCorrectionInitial: keelCorrectionInitial.value,
+    keelCorrectionFinal: keelCorrectionFinal.value
+  });
+
   try {
     // Calculate means Initial
-    const moyenneForInitial = ((parseFloat(formData.forePortInitial) + parseFloat(formData.foreStbdInitial)) / 2).toFixed(3);
-    const moyenneAftInitial = ((parseFloat(formData.aftPortInitial) + parseFloat(formData.aftStbdInitial)) / 2).toFixed(3);
-    const moyenneMidInitial = ((parseFloat(formData.midPortInitial) + parseFloat(formData.midStbdInitial)) / 2).toFixed(3);
+    const moyenneForInitial = ((parseFloat(formDataState.forePortInitial) + parseFloat(formDataState.foreStbdInitial)) / 2).toFixed(3);
+    const moyenneAftInitial = ((parseFloat(formDataState.aftPortInitial) + parseFloat(formDataState.aftStbdInitial)) / 2).toFixed(3);
+    const moyenneMidInitial = ((parseFloat(formDataState.midPortInitial) + parseFloat(formDataState.midStbdInitial)) / 2).toFixed(3);
 
     // Calculate LBM
-    let lbm = parseFloat(formData.lbp);
-    const foreDistanceInitial = parseFloat(formData.foreDistanceInitial);
-    const aftDistanceInitial = parseFloat(formData.aftDistanceInitial);
+    let lbm = parseFloat(formDataState.lbp);
+    const foreDistanceInitial = parseFloat(formDataState.foreDistanceInitial);
+    const aftDistanceInitial = parseFloat(formDataState.aftDistanceInitial);
 
     if (foreDistanceInitial < 0 && aftDistanceInitial > 0) {
       lbm -= foreDistanceInitial - aftDistanceInitial;
@@ -102,74 +127,80 @@ export default Function calculateValues () {
     } else if (foreDistanceInitial > 0 && aftDistanceInitial > 0) {
       lbm += foreDistanceInitial + aftDistanceInitial;
     } else if (foreDistanceInitial === 0 && aftDistanceInitial === 0) {
-      lbm = parseFloat(formData.lbp);
+      lbm = parseFloat(formDataState.lbp);
     } else if (foreDistanceInitial === 0 && aftDistanceInitial   < 0) {
-      lbm = parseFloat(formData.lbp) + Math.abs(aftDistanceInitial);
+      lbm = parseFloat(formDataState.lbp) + Math.abs(aftDistanceInitial);
     } else if (foreDistanceInitial === 0 && aftDistanceInitial > 0) {
-      lbm = parseFloat(formData.lbp) - Math.abs(aftDistanceInitial);
+      lbm = parseFloat(formDataState.lbp) - Math.abs(aftDistanceInitial);
     } else if (foreDistanceInitial > 0 && aftDistanceInitial === 0) {
-      lbm = parseFloat(formData.lbp) - Math.abs(foreDistanceInitial);
+      lbm = parseFloat(formDataState.lbp) - Math.abs(foreDistanceInitial);
     } else if (foreDistanceInitial < 0 && aftDistanceInitial === 0) {
-      lbm = parseFloat(formData.lbp) + Math.abs(foreDistanceInitial);
+      lbm = parseFloat(formDataState.lbp) + Math.abs(foreDistanceInitial);
     }
 
     // Calculate TrimObserved
     const trimObservedInitial = (parseFloat(moyenneAftInitial) - parseFloat(moyenneForInitial)).toFixed(2);
-    const trimObservedFinal = (parseFloat(moyenneAftFinal) - parseFloat(moyenneForFinal)).toFixed(2);
+    const trimObservedFinal = (parseFloat(formDataState.aftPortFinal) - parseFloat(formDataState.forePortFinal)).toFixed(2);
     //Calculate Draft Corrected:
     // Fore Initial
+    let foreCorrectedInitial;
     if(foreDistanceInitial<0){
-      foreCorrectedInitial=meanForeInitial-((trimObservedInitial*foreDistanceInitial)/lbm);
+      foreCorrectedInitial=parseFloat(moyenneForInitial)-((trimObservedInitial*foreDistanceInitial)/lbm);
     }else if(foreDistanceInitial>0){
-      foreCorrectedInitial=meanForeInitial+((trimObservedInitial*foreDistanceInitial)/lbm);
+      foreCorrectedInitial=parseFloat(moyenneForInitial)+((trimObservedInitial*foreDistanceInitial)/lbm);
     }else if(foreDistanceInitial===0){
-      foreCorrectedInitial=meanForeInitial;
+      foreCorrectedInitial=parseFloat(moyenneForInitial);
     }
 
     //Aft Initial
+    let aftCorrectedInitial;
     if(aftDistanceInitial<0){
-      aftCorrectedInitial=meanAftInitial-((trimObservedInitial*aftDistanceInitial)/lbm);
+      aftCorrectedInitial=parseFloat(moyenneAftInitial)-((trimObservedInitial*aftDistanceInitial)/lbm);
     }else if(aftDistanceInitial>0){
-      aftCorrectedInitial=meanAftInitial+((trimObservedInitial*aftDistanceInitial)/lbm);
+      aftCorrectedInitial=parseFloat(moyenneAftInitial)+((trimObservedInitial*aftDistanceInitial)/lbm);
     }else if(aftDistanceInitial===0){
-      aftCorrectedInitial=meanAftInitial;
+      aftCorrectedInitial=parseFloat(moyenneAftInitial);
     }
 
     //Mid Initial
+    let midCorrectedInitial;
     if(midDistanceInitial<0){
-      midCorrectedInitial=meanMidInitial-((trimObservedInitial*midDistanceInitial)/lbm);
+      midCorrectedInitial=parseFloat(moyenneMidInitial)-((trimObservedInitial*midDistanceInitial)/lbm);
     }else if(midDistanceInitial>0){
-      midCorrectedInitial=meanMidInitial+((trimObservedInitial*midDistanceInitial)/lbm);
+      midCorrectedInitial=parseFloat(moyenneMidInitial)+((trimObservedInitial*midDistanceInitial)/lbm);
     }else if(midDistanceInitial===0){
-      midCorrectedInitial=meanMidInitial;
+      midCorrectedInitial=parseFloat(moyenneMidInitial);
     }
 
 
     // Fore Final
-    if(foreDistanceFinal<0){
-      foreCorrectedFinal=meanForeFinal-((trimObservedFinal*foreDistanceFinal)/lbm);
-    }else if(foreDistanceFinal>0){
-      foreCorrectedFinal=meanForeFinal+((trimObservedFinal*foreDistanceFinal)/lbm);
-    }else if(foreDistanceFinal===0){
-      foreCorrectedFinal=meanForeFinal;
+    let foreCorrectedFinal;
+    if(formDataState.foreDistanceFinal<0){
+      foreCorrectedFinal=parseFloat(formDataState.forePortFinal)-((trimObservedFinal*formDataState.foreDistanceFinal)/lbm);
+    }else if(formDataState.foreDistanceFinal>0){
+      foreCorrectedFinal=parseFloat(formDataState.forePortFinal)+((trimObservedFinal*formDataState.foreDistanceFinal)/lbm);
+    }else if(formDataState.foreDistanceFinal===0){
+      foreCorrectedFinal=parseFloat(formDataState.forePortFinal);
     }
 
     //Aft Final
-    if(aftDistanceFinal<0){
-      aftCorrectedFinal=meanAftFinal-((trimObservedFinal*aftDistanceFinal)/lbm);
-    }else if(aftDistanceFinal>0){
-      aftCorrectedFinal=meanAftFinal+((trimObservedFinal*aftDistanceFinal)/lbm);
-    }else if(aftDistanceFinal===0){
-      aftCorrectedFinal=meanAftFinal;
+    let aftCorrectedFinal;
+    if(formDataState.aftDistanceFinal<0){
+      aftCorrectedFinal=parseFloat(formDataState.aftPortFinal)-((trimObservedFinal*formDataState.aftDistanceFinal)/lbm);
+    }else if(formDataState.aftDistanceFinal>0){
+      aftCorrectedFinal=parseFloat(formDataState.aftPortFinal)+((trimObservedFinal*formDataState.aftDistanceFinal)/lbm);
+    }else if(formDataState.aftDistanceFinal===0){
+      aftCorrectedFinal=parseFloat(formDataState.aftPortFinal);
     }
 
     //Mid Final
-    if(midDistanceFinal<0){
-      midCorrectedFinal=meanMidFinal-((trimObservedFinal*midDistanceFinal)/lbm);
-    }else if(midDistanceFinal>0){
-      midCorrectedFinal=meanMidFinal+((trimObservedFinal*midDistanceFinal)/lbm);
-    }else if(midDistanceFinal===0){
-      midCorrectedFinal=meanMidFinal;
+    let midCorrectedFinal;
+    if(formDataState.midDistanceFinal<0){
+      midCorrectedFinal=parseFloat(formDataState.midPortFinal)-((trimObservedFinal*formDataState.midDistanceFinal)/lbm);
+    }else if(formDataState.midDistanceFinal>0){
+      midCorrectedFinal=parseFloat(formDataState.midPortFinal)+((trimObservedFinal*formDataState.midDistanceFinal)/lbm);
+    }else if(formDataState.midDistanceFinal===0){
+      midCorrectedFinal=parseFloat(formDataState.midPortFinal);
     }
     
     // Trim Corrected:
@@ -193,7 +224,8 @@ export default Function calculateValues () {
     // Update form data with calculated values
     setFormData(prev => ({
       ...prev,
-      trim: trim,
+      trimObservedInitial: trimObservedInitial.toFixed(2),
+      trimObservedFinal: trimObservedFinal.toFixed(2),
       lbm: lbm.toFixed(2),
       foreCorrectedInitial: foreCorrectedInitial.toFixed(2),
       aftCorrectedInitial: aftCorrectedInitial.toFixed(2),
@@ -212,6 +244,15 @@ export default Function calculateValues () {
       keelCorrectionInitial: keelCorrectionInitial,
       keelCorrectionFinal: keelCorrectionFinal
     }));
+
+    return { 
+      foreCorrectedInitial: parseFloat(foreCorrectedInitial.toFixed(2)), 
+      aftCorrectedInitial: parseFloat(aftCorrectedInitial.toFixed(2)), 
+      midCorrectedInitial: parseFloat(midCorrectedInitial.toFixed(2)), 
+      foreCorrectedFinal: parseFloat(foreCorrectedFinal.toFixed(2)), 
+      aftCorrectedFinal: parseFloat(aftCorrectedFinal.toFixed(2)), 
+      midCorrectedFinal: parseFloat(midCorrectedFinal.toFixed(2)) 
+    };
 
   } catch (error) {
     console.error(error);

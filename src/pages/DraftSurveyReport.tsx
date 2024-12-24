@@ -10,6 +10,7 @@ import Button from "@mui/material/Button";
 import { useSnackbar } from "notistack";
 import draftSurveyReportService from "../services/draftSurveyReportServices";
 // import CalculateValues from '../fonctions/Fonction1';
+import Displacement from "./Displacement";
 
 interface DraftSurveyFormData {
   // Vessel Information
@@ -200,108 +201,107 @@ const DraftSurveyReport: React.FC = () => {
 
     // Initialize other required fields with default values
     // Initial Measurements
-  forePortInitial: 0,
-  foreStbdInitial: 0,
-  foreMeanInitial: 0,
-  foreDistanceInitial: 0,
-  foreCorrectionInitial: 0,
-  foreCorrectedInitial: 0,
-  forePortFinal: 0,
-  foreStbdFinal: 0,
-  foreMeanFinal: 0,
-  foreDistanceFinal: 0,
-  foreCorrectionFinal: 0,
-  foreCorrectedFinal: 0,
+    forePortInitial: 0,
+    foreStbdInitial: 0,
+    foreMeanInitial: 0,
+    foreDistanceInitial: 0,
+    foreCorrectionInitial: 0,
+    foreCorrectedInitial: 0,
+    forePortFinal: 0,
+    foreStbdFinal: 0,
+    foreMeanFinal: 0,
+    foreDistanceFinal: 0,
+    foreCorrectionFinal: 0,
+    foreCorrectedFinal: 0,
 
-  // Aft Measurements
-  aftPortInitial: 0,
-  aftStbdInitial: 0,
-  aftMeanInitial: 0,
-  aftDistanceInitial: 0,
-  aftCorrectionInitial: 0,
-  aftCorrectedInitial: 0,
-  aftPortFinal: 0,
-  aftStbdFinal: 0,
-  aftMeanFinal: 0,
-  aftDistanceFinal: 0,
-  aftCorrectionFinal: 0,
-  aftCorrectedFinal: 0,
+    // Aft Measurements
+    aftPortInitial: 0,
+    aftStbdInitial: 0,
+    aftMeanInitial: 0,
+    aftDistanceInitial: 0,
+    aftCorrectionInitial: 0,
+    aftCorrectedInitial: 0,
+    aftPortFinal: 0,
+    aftStbdFinal: 0,
+    aftMeanFinal: 0,
+    aftDistanceFinal: 0,
+    aftCorrectionFinal: 0,
+    aftCorrectedFinal: 0,
 
-  // Mid Measurements
-  midPortInitial: 0,
-  midStbdInitial: 0,
-  midMeanInitial: 0,
-  midDistanceInitial: 0,
-  midCorrectionInitial: 0,
-  midCorrectedInitial: 0,
-  midPortFinal: 0,
-  midStbdFinal: 0,
-  midMeanFinal: 0,
-  midDistanceFinal: 0,
-  midCorrectionFinal: 0,
-  midCorrectedFinal: 0,
+    // Mid Measurements
+    midPortInitial: 0,
+    midStbdInitial: 0,
+    midMeanInitial: 0,
+    midDistanceInitial: 0,
+    midCorrectionInitial: 0,
+    midCorrectedInitial: 0,
+    midPortFinal: 0,
+    midStbdFinal: 0,
+    midMeanFinal: 0,
+    midDistanceFinal: 0,
+    midCorrectionFinal: 0,
+    midCorrectedFinal: 0,
 
-  // Keel Corrections
-  keelCorrectionInitial: 0,
-  keelCorrectionFinal: 0,
-  
-//TRIM
-  trimObservedInitial:0,
-  trimObservedFinal:0,
-  trimCorrectedInitial:0,
-  trimCorrectedFinal:0,
+    // Keel Corrections
+    keelCorrectionInitial: 0,
+    keelCorrectionFinal: 0,
 
-  // Means
-  meanForeAftInitial: 0,
-  meanOfMeanInitial: 0,
-  quarterMeanInitial: 0,
-  meanForeAftFinal: 0,
-  meanOfMeanFinal: 0,
-  quarterMeanFinal: 0,
+    //TRIM
+    trimObservedInitial: 0,
+    trimObservedFinal: 0,
+    trimCorrectedInitial: 0,
+    trimCorrectedFinal: 0,
 
-  // Displacement Calculations
-  correspondingDisplInitial: 0,
-  trimCorrectionInitial: 0,
-  correctedDisplacementForTrimInitial: 0,
-  densityDockWaterInitial: 0,
-  correctedDisplacementForDensityInitial: 0,
-  deductiblesLiquidsInitial: 0,
-  netLightLoadedDisplacementInitial: 0,
+    // Means
+    meanForeAftInitial: 0,
+    meanOfMeanInitial: 0,
+    quarterMeanInitial: 0,
+    meanForeAftFinal: 0,
+    meanOfMeanFinal: 0,
+    quarterMeanFinal: 0,
 
-  correspondingDisplFinal: 0,
-  trimCorrectionFinal: 0,
-  correctedDisplacementForTrimFinal: 0,
-  densityDockWaterFinal: 0,
-  correctedDisplacementForDensityFinal: 0,
-  deductiblesLiquidsFinal: 0,
-  netLightLoadedDisplacementFinal: 0,
+    // Displacement Calculations
+    correspondingDisplInitial: 0,
+    trimCorrectionInitial: 0,
+    correctedDisplacementForTrimInitial: 0,
+    densityDockWaterInitial: 0,
+    correctedDisplacementForDensityInitial: 0,
+    deductiblesLiquidsInitial: 0,
+    netLightLoadedDisplacementInitial: 0,
 
-  // Total Cargo
-  totalCargoLoadedOnBoard: 0,
-});
+    correspondingDisplFinal: 0,
+    trimCorrectionFinal: 0,
+    correctedDisplacementForTrimFinal: 0,
+    densityDockWaterFinal: 0,
+    correctedDisplacementForDensityFinal: 0,
+    deductiblesLiquidsFinal: 0,
+    netLightLoadedDisplacementFinal: 0,
+
+    // Total Cargo
+    totalCargoLoadedOnBoard: 0,
+  });
 
   const calculatedValues = calculateValues(formData);
 
   // Fonction Calculer les Valeurs:
   function calculateValues(formData: DraftSurveyFormData) {
-
     // Log the port and starboard initial values before calculating means
-    console.log('Fore Port Initial:', formData.forePortInitial);
-    console.log('Fore Stbd Initial:', formData.foreStbdInitial);
-    console.log('Aft Port Initial:', formData.aftPortInitial);
-    console.log('Aft Stbd Initial:', formData.aftStbdInitial);
+    console.log("Fore Port Initial:", formData.forePortInitial);
+    console.log("Fore Stbd Initial:", formData.foreStbdInitial);
+    console.log("Aft Port Initial:", formData.aftPortInitial);
+    console.log("Aft Stbd Initial:", formData.aftStbdInitial);
 
     // Calculate mean values with validation
-    const aftMeanInitial = (Number(formData.aftPortInitial) + Number(formData.aftStbdInitial)) / 2;
-    const foreMeanInitial = (Number(formData.forePortInitial) + Number(formData.foreStbdInitial)) / 2;
-    const midMeanInitial = (Number(formData.midPortInitial) + Number(formData.midStbdInitial)) / 2;
+    const aftMeanInitial =
+      (Number(formData.aftPortInitial) + Number(formData.aftStbdInitial)) / 2;
+    const foreMeanInitial =
+      (Number(formData.forePortInitial) + Number(formData.foreStbdInitial)) / 2;
+    const midMeanInitial =
+      (Number(formData.midPortInitial) + Number(formData.midStbdInitial)) / 2;
     // Log the calculated means
-    console.log('Aft Mean Initial:', aftMeanInitial);
-    console.log('Fore Mean Initial:', foreMeanInitial);
-    console.log('Mid Mean Initial :', midMeanInitial);
-    
-
-
+    console.log("Aft Mean Initial:", aftMeanInitial);
+    console.log("Fore Mean Initial:", foreMeanInitial);
+    console.log("Mid Mean Initial :", midMeanInitial);
 
     const calculatedValues: {
       lbmInitial: number;
@@ -338,11 +338,18 @@ const DraftSurveyReport: React.FC = () => {
       // Calculate mean values first
       aftMeanInitial: aftMeanInitial,
       foreMeanInitial: foreMeanInitial,
-      aftMeanFinal: (Number(formData.aftPortFinal) + Number(formData.aftStbdFinal)) / 2,
-      foreMeanFinal: (Number(formData.forePortFinal) + Number(formData.foreStbdFinal)) / 2,
+      aftMeanFinal:
+        (Number(formData.aftPortFinal) + Number(formData.aftStbdFinal)) / 2,
+      foreMeanFinal:
+        (Number(formData.forePortFinal) + Number(formData.foreStbdFinal)) / 2,
       // Now calculate trims
-      trimObservedInitial: (Number(aftMeanInitial) - Number(foreMeanInitial)).toFixed(3),
-      trimObservedFinal: ((Number(formData.aftPortFinal) + Number(formData.aftStbdFinal)) / 2 - (Number(formData.forePortFinal) + Number(formData.foreStbdFinal)) / 2).toFixed(3),
+      trimObservedInitial: (
+        Number(aftMeanInitial) - Number(foreMeanInitial)
+      ).toFixed(3),
+      trimObservedFinal: (
+        (Number(formData.aftPortFinal) + Number(formData.aftStbdFinal)) / 2 -
+        (Number(formData.forePortFinal) + Number(formData.foreStbdFinal)) / 2
+      ).toFixed(3),
       meanForeAftInitial: 0,
       meanOfMeanInitial: 0,
       quarterMeanInitial: 0,
@@ -350,7 +357,7 @@ const DraftSurveyReport: React.FC = () => {
       meanOfMeanFinal: 0,
       quarterMeanFinal: 0,
       correctedDisplacementForTrimInitial: 0,
-      correctedDisplacementForTrimFinal: 0
+      correctedDisplacementForTrimFinal: 0,
     };
 
     const calculateLBM = (
@@ -359,7 +366,7 @@ const DraftSurveyReport: React.FC = () => {
     ): number => {
       let lbm = Number(formData.lbp);
       if (isNaN(foreDistance) || isNaN(aftDistance)) {
-        console.error('Invalid distances:', foreDistance, aftDistance);
+        console.error("Invalid distances:", foreDistance, aftDistance);
         return NaN;
       }
       if (foreDistance < 0 && aftDistance > 0) {
@@ -373,10 +380,17 @@ const DraftSurveyReport: React.FC = () => {
       }
       return lbm;
     };
-    
+
     // Add validation for formData fields used in calculations
-    if (isNaN(formData.foreDistanceInitial) || isNaN(formData.aftDistanceInitial)) {
-      console.error('Invalid initial distances:', formData.foreDistanceInitial, formData.aftDistanceInitial);
+    if (
+      isNaN(formData.foreDistanceInitial) ||
+      isNaN(formData.aftDistanceInitial)
+    ) {
+      console.error(
+        "Invalid initial distances:",
+        formData.foreDistanceInitial,
+        formData.aftDistanceInitial
+      );
       calculatedValues.lbmInitial = NaN;
     } else {
       calculatedValues.lbmInitial = calculateLBM(
@@ -384,10 +398,13 @@ const DraftSurveyReport: React.FC = () => {
         formData.aftDistanceInitial
       );
     }
-    
-    
+
     if (isNaN(formData.foreDistanceFinal) || isNaN(formData.aftDistanceFinal)) {
-      console.error('Invalid final distances:', formData.foreDistanceFinal, formData.aftDistanceFinal);
+      console.error(
+        "Invalid final distances:",
+        formData.foreDistanceFinal,
+        formData.aftDistanceFinal
+      );
       calculatedValues.lbmFinal = NaN;
     } else {
       calculatedValues.lbmFinal = calculateLBM(
@@ -400,23 +417,26 @@ const DraftSurveyReport: React.FC = () => {
     // Initial
     calculatedValues.foreCorrectedInitial =
       foreMeanInitial +
-      (Number(calculatedValues.trimObservedInitial) * formData.foreDistanceInitial) /
+      (Number(calculatedValues.trimObservedInitial) *
+        formData.foreDistanceInitial) /
         calculatedValues.lbmInitial;
     calculatedValues.aftCorrectedInitial =
       aftMeanInitial +
-      (Number(calculatedValues.trimObservedInitial) * formData.aftDistanceInitial) /
+      (Number(calculatedValues.trimObservedInitial) *
+        formData.aftDistanceInitial) /
         calculatedValues.lbmInitial;
     calculatedValues.midCorrectedInitial =
       midMeanInitial +
-      (Number(calculatedValues.trimObservedInitial) * formData.midDistanceInitial) /
-        calculatedValues.lbmInitial;    
+      (Number(calculatedValues.trimObservedInitial) *
+        formData.midDistanceInitial) /
+        calculatedValues.lbmInitial;
 
     // Final:
 
     const foreMeanFinal =
-    (Number(formData.forePortFinal) + Number(formData.foreStbdFinal)) / 2;
+      (Number(formData.forePortFinal) + Number(formData.foreStbdFinal)) / 2;
     const aftMeanFinal =
-    (Number(formData.aftPortFinal) + Number(formData.aftStbdFinal)) / 2;
+      (Number(formData.aftPortFinal) + Number(formData.aftStbdFinal)) / 2;
     const midMeanFinal =
       (Number(formData.midPortFinal) + Number(formData.midStbdFinal)) / 2;
 
@@ -434,17 +454,21 @@ const DraftSurveyReport: React.FC = () => {
 
     calculatedValues.foreCorrectedFinal =
       foreMeanFinal +
-      (Number(calculatedValues.trimObservedFinal) * Number(formData.foreDistanceFinal)) /
+      (Number(calculatedValues.trimObservedFinal) *
+        Number(formData.foreDistanceFinal)) /
         calculatedValues.lbmFinal;
 
     // Check if lbmFinal is zero to prevent division by zero
     if (calculatedValues.lbmFinal === 0) {
-      console.error("Error: lbmFinal is zero, cannot calculate aftCorrectedFinal.");
+      console.error(
+        "Error: lbmFinal is zero, cannot calculate aftCorrectedFinal."
+      );
       calculatedValues.aftCorrectedFinal = 0; // Set to 0 or another appropriate default value
     } else {
       calculatedValues.aftCorrectedFinal =
         aftMeanFinal +
-        (Number(calculatedValues.trimObservedFinal) * formData.aftDistanceFinal) /
+        (Number(calculatedValues.trimObservedFinal) *
+          formData.aftDistanceFinal) /
           calculatedValues.lbmFinal;
     }
 
@@ -452,80 +476,107 @@ const DraftSurveyReport: React.FC = () => {
       midMeanFinal +
       (Number(calculatedValues.trimObservedFinal) * formData.midDistanceFinal) /
         calculatedValues.lbmFinal;
-    console.log('foreCorrectedInitial :',calculatedValues.foreCorrectedInitial);
-    console.log('aftCorrectedInitial :', calculatedValues.aftCorrectedInitial);
-    console.log('midCorrectedInitial :', calculatedValues.midCorrectedInitial);
-    console.log('foreCorrectedFinal :', calculatedValues.foreCorrectedFinal);
-    console.log('aftCorrectedFinal :', calculatedValues.aftCorrectedFinal);
-    console.log('midCorrectedFinal :', calculatedValues.midCorrectedFinal);
+    console.log(
+      "foreCorrectedInitial :",
+      calculatedValues.foreCorrectedInitial
+    );
+    console.log("aftCorrectedInitial :", calculatedValues.aftCorrectedInitial);
+    console.log("midCorrectedInitial :", calculatedValues.midCorrectedInitial);
+    console.log("foreCorrectedFinal :", calculatedValues.foreCorrectedFinal);
+    console.log("aftCorrectedFinal :", calculatedValues.aftCorrectedFinal);
+    console.log("midCorrectedFinal :", calculatedValues.midCorrectedFinal);
     // Calcul Du Mean ForAft Draft Initial:
 
-    const meanForeAftInitial = (Number(calculatedValues.foreCorrectedInitial) + Number(calculatedValues.aftCorrectedInitial)) / 2;
-    const meanOfMeanInitial = (Number(meanForeAftInitial) + Number(calculatedValues.midCorrectedInitial)) / 2;
+    const meanForeAftInitial =
+      (Number(calculatedValues.foreCorrectedInitial) +
+        Number(calculatedValues.aftCorrectedInitial)) /
+      2;
+    const meanOfMeanInitial =
+      (Number(meanForeAftInitial) +
+        Number(calculatedValues.midCorrectedInitial)) /
+      2;
 
     const quarterMeanInitial =
-      ((Number(meanOfMeanInitial) + Number(calculatedValues.midCorrectedInitial)) / 2) + Number(formData.keelCorrectionInitial);
+      (Number(meanOfMeanInitial) +
+        Number(calculatedValues.midCorrectedInitial)) /
+        2 +
+      Number(formData.keelCorrectionInitial);
 
     calculatedValues.meanForeAftInitial = Number(meanForeAftInitial);
     calculatedValues.meanOfMeanInitial = Number(meanOfMeanInitial);
     calculatedValues.quarterMeanInitial = Number(quarterMeanInitial);
 
-        // Calcul Du Mean ForAft Draft Final:
+    // Calcul Du Mean ForAft Draft Final:
 
-    const meanForeAftFinal = (Number(calculatedValues.foreCorrectedFinal) + Number(calculatedValues.aftCorrectedFinal)) / 2;
-    const meanOfMeanFinal = (Number(meanForeAftFinal) + Number(calculatedValues.midCorrectedFinal)) / 2;
+    const meanForeAftFinal =
+      (Number(calculatedValues.foreCorrectedFinal) +
+        Number(calculatedValues.aftCorrectedFinal)) /
+      2;
+    const meanOfMeanFinal =
+      (Number(meanForeAftFinal) + Number(calculatedValues.midCorrectedFinal)) /
+      2;
 
     const quarterMeanFinal =
-      ((Number(meanOfMeanFinal) + Number(calculatedValues.midCorrectedFinal)) / 2) + Number(formData.keelCorrectionFinal);
+      (Number(meanOfMeanFinal) + Number(calculatedValues.midCorrectedFinal)) /
+        2 +
+      Number(formData.keelCorrectionFinal);
 
     calculatedValues.meanForeAftFinal = Number(meanForeAftFinal);
     calculatedValues.meanOfMeanFinal = Number(meanOfMeanFinal);
     calculatedValues.quarterMeanFinal = Number(quarterMeanFinal);
 
-    console.log(calculatedValues.meanForeAftInitial)
-    console.log(calculatedValues.meanOfMeanInitial)
-    console.log(calculatedValues.quarterMeanInitial)
-
+    console.log(calculatedValues.meanForeAftInitial);
+    console.log(calculatedValues.meanOfMeanInitial);
+    console.log(calculatedValues.quarterMeanInitial);
 
     // Calcul du Trim Correction:
-    const trimObservedInitial = (Number(aftMeanInitial) - Number(foreMeanInitial)).toFixed(3);
-    const trimObservedFinal = (Number(aftMeanFinal) - Number(foreMeanFinal)).toFixed(3);
+    const trimObservedInitial = (
+      Number(aftMeanInitial) - Number(foreMeanInitial)
+    ).toFixed(3);
+    const trimObservedFinal = (
+      Number(aftMeanFinal) - Number(foreMeanFinal)
+    ).toFixed(3);
 
     calculatedValues.trimObservedInitial = trimObservedInitial;
     calculatedValues.trimObservedFinal = trimObservedFinal;
 
-    // Calcul du Corrected Displacement For Trim:
-    const correctedDisplacementForTrimInitial = (Number(aftMeanInitial) - Number(foreMeanInitial)).toFixed(3);
-    const correctedDisplacementForTrimFinal = (Number(aftMeanFinal) - Number(foreMeanFinal)).toFixed(3);
-    calculatedValues.correctedDisplacementForTrimFinal = Number(correctedDisplacementForTrimFinal);
+    // Calcul du Corrected Displacement For The QuarterMeans:
+    // Initial  :La valeur du Displacement doit être retenu du composant ValeursInitials.tsx
 
-    calculatedValues.correctedDisplacementForTrimInitial = Number(correctedDisplacementForTrimInitial);
+    const calculateDisplacement = () => {
+      // Logique pour calculer le déplacement initial et final
+      const correspondingDisplInitial = formData.correspondingDisplInitial; // Exemple
+      const correspondingDisplFinal = formData.correspondingDisplFinal; // Exemple
 
+      return { correspondingDisplInitial, correspondingDisplFinal };
+    };
 
+    const { correspondingDisplInitial, correspondingDisplFinal } =
+      calculateDisplacement();
 
     // Retourner les valeurs calculées
     console.log(calculatedValues);
     return calculatedValues;
   }
-  
+
   const handleChange =
-  (field: keyof DraftSurveyFormData) =>
-  (event: React.ChangeEvent<HTMLInputElement>) => {
-    const value = event.target.value;
+    (field: keyof DraftSurveyFormData) =>
+    (event: React.ChangeEvent<HTMLInputElement>) => {
+      const value = event.target.value;
 
-    // Vérifier si la valeur est un nombre valide ou vide
-    const isValidNumber = /^(\d+(\.\d{0,2})?|\.\d{1,2})?$/.test(value);
+      // Vérifier si la valeur est un nombre valide ou vide
+      const isValidNumber = /^(\d+(\.\d{0,2})?|\.\d{1,2})?$/.test(value);
 
-    if (isValidNumber || value === "") {
-      setFormData((prev) => ({
-        ...prev,
-        [field]: value === "" ? "" : parseFloat(value), // Convertir en nombre si ce n'est pas vide
-      }));
-    } else {
-      // Optionnel : Afficher un message d'erreur ou une alerte
-      console.error("Valeur invalide : ", value);
-    }
-  };
+      if (isValidNumber || value === "") {
+        setFormData((prev) => ({
+          ...prev,
+          [field]: value === "" ? "" : parseFloat(value), // Convertir en nombre si ce n'est pas vide
+        }));
+      } else {
+        // Optionnel : Afficher un message d'erreur ou une alerte
+        console.error("Valeur invalide : ", value);
+      }
+    };
   const handleSubmit = async () => {
     try {
       await draftSurveyReportService.createReport(formData);
@@ -950,13 +1001,13 @@ const DraftSurveyReport: React.FC = () => {
                         onChange={handleChange("foreDistanceInitial")}
                       />
                     </Grid>
-                    
+
                     <Grid item xs={12}>
                       <StyledTextField
                         fullWidth
                         label="Fore Corrected"
                         id="foreCorrectedInitial"
-                        value={(calculatedValues.foreCorrectedInitial).toFixed(3)}
+                        value={calculatedValues.foreCorrectedInitial.toFixed(3)}
                         onChange={handleChange("foreCorrectedInitial")}
                       />
                     </Grid>
@@ -1011,13 +1062,13 @@ const DraftSurveyReport: React.FC = () => {
                         onChange={handleChange("aftDistanceInitial")}
                       />
                     </Grid>
-                    
+
                     <Grid item xs={12}>
                       <StyledTextField
                         fullWidth
                         label="Aft Corrected"
                         id="aftCorrectedInitial"
-                        value={(calculatedValues.aftCorrectedInitial).toFixed(3)}
+                        value={calculatedValues.aftCorrectedInitial.toFixed(3)}
                         onChange={handleChange("aftCorrectedInitial")}
                       />
                     </Grid>
@@ -1072,13 +1123,13 @@ const DraftSurveyReport: React.FC = () => {
                         onChange={handleChange("midDistanceInitial")}
                       />
                     </Grid>
-                    
+
                     <Grid item xs={12}>
                       <StyledTextField
                         fullWidth
                         label="Mid Corrected"
                         id="midCorrectedInitial"
-                        value={(calculatedValues.midCorrectedInitial).toFixed(3)}
+                        value={calculatedValues.midCorrectedInitial.toFixed(3)}
                         onChange={handleChange("midCorrectedInitial")}
                       />
                     </Grid>
@@ -1098,7 +1149,7 @@ const DraftSurveyReport: React.FC = () => {
                         fullWidth
                         label="Mean Fore/Aft"
                         id="meanForeAftInitial"
-                        value={(calculatedValues.meanForeAftInitial).toFixed(3)}
+                        value={calculatedValues.meanForeAftInitial.toFixed(3)}
                         onChange={handleChange("meanForeAftInitial")}
                       />
                     </Grid>
@@ -1107,7 +1158,7 @@ const DraftSurveyReport: React.FC = () => {
                         fullWidth
                         label="Mean of Mean"
                         id="meanOfMeanInitial"
-                        value={(calculatedValues.meanOfMeanInitial).toFixed(3)}
+                        value={calculatedValues.meanOfMeanInitial.toFixed(3)}
                         onChange={handleChange("meanOfMeanInitial")}
                       />
                     </Grid>
@@ -1125,7 +1176,7 @@ const DraftSurveyReport: React.FC = () => {
                         fullWidth
                         label="Quarter Mean"
                         id="quarterMeanInitial"
-                        value={(calculatedValues.quarterMeanInitial).toFixed(3)}
+                        value={calculatedValues.quarterMeanInitial.toFixed(3)}
                         onChange={handleChange("quarterMeanInitial")}
                       />
                     </Grid>
@@ -1190,13 +1241,13 @@ const DraftSurveyReport: React.FC = () => {
                         onChange={handleChange("foreDistanceFinal")}
                       />
                     </Grid>
-                    
+
                     <Grid item xs={12}>
                       <StyledTextField
                         fullWidth
                         label="Fore Corrected"
                         id="foreCorrectedFinal"
-                        value={(calculatedValues.foreCorrectedFinal).toFixed(3)}
+                        value={calculatedValues.foreCorrectedFinal.toFixed(3)}
                         onChange={handleChange("foreCorrectedFinal")}
                       />
                     </Grid>
@@ -1251,13 +1302,13 @@ const DraftSurveyReport: React.FC = () => {
                         onChange={handleChange("aftDistanceFinal")}
                       />
                     </Grid>
-                    
+
                     <Grid item xs={12}>
                       <StyledTextField
                         fullWidth
                         label="Aft Corrected"
                         id="aftCorrectedFinal"
-                        value={(calculatedValues.aftCorrectedFinal).toFixed(3)}
+                        value={calculatedValues.aftCorrectedFinal.toFixed(3)}
                         onChange={handleChange("aftCorrectedFinal")}
                       />
                     </Grid>
@@ -1312,13 +1363,13 @@ const DraftSurveyReport: React.FC = () => {
                         onChange={handleChange("midDistanceFinal")}
                       />
                     </Grid>
-                    
+
                     <Grid item xs={12}>
                       <StyledTextField
                         fullWidth
                         label="Mid Corrected"
                         id="midCorrectedFinal"
-                    value={(calculatedValues.midCorrectedFinal).toFixed(3) }
+                        value={calculatedValues.midCorrectedFinal.toFixed(3)}
                         onChange={handleChange("midCorrectedFinal")}
                       />
                     </Grid>
@@ -1338,7 +1389,7 @@ const DraftSurveyReport: React.FC = () => {
                         fullWidth
                         label="Mean Fore/Aft"
                         id="meanForeAftFinal"
-                        value={(calculatedValues.meanForeAftFinal).toFixed(3)}
+                        value={calculatedValues.meanForeAftFinal.toFixed(3)}
                       />
                     </Grid>
                     <Grid item xs={12}>
@@ -1346,7 +1397,7 @@ const DraftSurveyReport: React.FC = () => {
                         fullWidth
                         label="Mean of Mean"
                         id="meanOfMeanFinal"
-                        value={(calculatedValues.meanOfMeanFinal).toFixed(3)}
+                        value={calculatedValues.meanOfMeanFinal.toFixed(3)}
                       />
                     </Grid>
                     <Grid item xs={12}>
@@ -1363,7 +1414,7 @@ const DraftSurveyReport: React.FC = () => {
                         fullWidth
                         label="Quarter Mean"
                         id="quarterMeanFinal"
-                        value={(calculatedValues.quarterMeanFinal).toFixed(3)}
+                        value={calculatedValues.quarterMeanFinal.toFixed(3)}
                       />
                     </Grid>
                   </Grid>
@@ -1423,7 +1474,7 @@ const DraftSurveyReport: React.FC = () => {
                         label="Density of Dock Water"
                         id="densityDockWaterInitial"
                         value={formData.densityDockWaterInitial}
-                          onChange={handleChange("densityDockWaterInitial")}
+                        onChange={handleChange("densityDockWaterInitial")}
                       />
                     </Grid>
                     <Grid item xs={12}>

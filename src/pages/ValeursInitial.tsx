@@ -496,7 +496,7 @@ const ValeursInitial: React.FC = () => {
                   />
                 </Grid>
                 <Grid item xs={12} md={4}>
-                  <StyledTextField
+                 <StyledTextField
                     fullWidth
                     label="FORE Stbd"
                     value={formData.foreStbd}
